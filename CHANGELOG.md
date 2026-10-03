@@ -1,5 +1,15 @@
 # iconv-nano
 
+## 0.0.3
+
+### Patch Changes
+
+- [`693c5fa`](https://github.com/jeremy-code/iconv-nano/commit/693c5fa1f116a76152ed049df262a02e3a3cd5ef) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add gbk codec
+
+- [`5556814`](https://github.com/jeremy-code/iconv-nano/commit/555681484a127819d38c280d44278ce8c1187e15) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add EUC-JP codec support
+
+- [`53a2424`](https://github.com/jeremy-code/iconv-nano/commit/53a2424cdc646bc3b1f19ef734578ed88acddc99) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: update gb18030 encoding to not fall through after reading index
+
 ## 0.0.2
 
 ### Patch Changes
