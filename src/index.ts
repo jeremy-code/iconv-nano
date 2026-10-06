@@ -45,6 +45,10 @@ import * as utf_16 from "./codecs/utf-16.js";
 import * as utf_16be from "./codecs/utf-16be.js";
 import * as utf_16le from "./codecs/utf-16le.js";
 import * as x_user_defined from "./codecs/x-user-defined.js";
+// Additional encodings
+import * as utf_32 from "./codecs/utf-32.js";
+import * as utf_32be from "./codecs/utf-32be.js";
+import * as utf_32le from "./codecs/utf-32le.js";
 import type {
   DecodeOptions,
   Decoder,
@@ -98,6 +102,9 @@ type CanonicalEncoding = Extract<
   | "utf_16le"
   | "utf_16be"
   | "x_user_defined"
+  | "utf_32"
+  | "utf_32le"
+  | "utf_32be"
 >;
 
 type Codec<
@@ -337,4 +344,9 @@ export {
   utf_16le as ucs_2,
   utf_16le as unicodefeff,
   x_user_defined,
+
+  // Additional encodings
+  utf_32,
+  utf_32be,
+  utf_32le,
 };
