@@ -18,6 +18,22 @@ describe("detectEndianness", () => {
     expect(detectEndianness(data)).toBe(expectedOutput);
   });
 
+  it("handles various bytes per element values", () => {
+    expect(detectEndianness(new Uint8Array([0xff, 0xfe, 0x00, 0x00]), 4)).toBe(
+      "little-endian",
+    );
+    expect(detectEndianness(new Uint8Array([0x00, 0x00, 0xfe, 0xff]), 4)).toBe(
+      "big-endian",
+    );
+    expect(detectEndianness(new Uint8Array([0xff, 0xfe]), 4)).toBe(undefined);
+    expect(detectEndianness(new Uint8Array([0xff, 0xfe, 0x01, 0x01]), 4)).toBe(
+      undefined,
+    );
+    expect(detectEndianness(new Uint8Array([0x01, 0x01, 0xfe, 0xff]), 4)).toBe(
+      undefined,
+    );
+  });
+
   it("returns undefined on empty input", () => {
     expect(detectEndianness(new Uint8Array())).toBe(undefined);
   });
