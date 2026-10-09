@@ -9,5 +9,6 @@ Modifications were made to the original file based on the [WHATWG encoding spec 
 - [gb18030-ranges.json](./gb18030-ranges.json) was preserved as-is due to the different format used.
 - [shift_jis.json](./shift_jis.json) was generated based on the by modifying the index for jis0208.
 - [big5.json](./big5.json) was generated as described in the specification.
+- [euc-kr.ts](./euc-kr.ts) is stored as a VLQ-encoded run-length payload (see `encodeVlqRunsPayload` in the generator, decoded at runtime by `src/utils/vlqRuns.ts`) instead of a plain reverse-index object. Encodings can opt in via `VLQ_RUNS_ENCODINGS`.
 
-The JSON files are imported by `iconv-nano` in the development code but are compiled into minified JavaScript files during build time.
+The encoding files are imported by `iconv-nano` in the development code but are compiled into minified JavaScript files during build time.

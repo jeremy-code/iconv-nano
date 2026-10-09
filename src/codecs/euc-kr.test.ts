@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import euc_kr_encoding from "../../encodings/euc-kr.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/euc-kr.js";
+import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as euc_kr from "./euc-kr.js";
+
+// Every character covered by the EUC-KR index, rebuilt from columnar runs
+const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
+const euc_kr_index = cpStarts
+  .reduce((chars, cpStart, i) => {
+    const count = counts[i]!;
+    for (let cp = cpStart; cp < cpStart + count; cp++) {
+      chars.push(String.fromCodePoint(cp));
+    }
+    return chars;
+  }, [] as string[])
+  .join("");
 
 describe("EUC-KR", () => {
   describe("encode", () => {
@@ -37,7 +50,7 @@ describe("EUC-KR", () => {
         ASCII: Array.from({ length: 0x7f }, (_, i) =>
           String.fromCharCode(i),
         ).join(""),
-        "EUC-KR index": Object.keys(euc_kr_encoding).join(""),
+        "EUC-KR index": euc_kr_index,
       }),
     )("%s", ([, input]) => {
       const encodedInput = euc_kr.encode(input);

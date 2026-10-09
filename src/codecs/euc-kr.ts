@@ -1,7 +1,12 @@
-import euc_kr from "../../encodings/euc-kr.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/euc-kr.js";
 import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
+import { decodeVlqRunsLookup } from "../utils/vlqRuns.js";
+
+// Code point -> pointer lookup over columnar runs of the EUC-KR reverse index,
+// decoded once on module load (see `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`)
+const lookupEucKrCodePoint = decodeVlqRunsLookup(PAYLOAD);
 
 // https://encoding.spec.whatwg.org/#euc-kr-encoder
 const encode: Encoder = (input) => {
@@ -14,8 +19,8 @@ const encode: Encoder = (input) => {
       buf[byteOffset] = codePoint;
       byteOffset++;
     } else {
-      const pointer = (euc_kr as Record<string, number>)[char]!;
-      if (pointer === undefined) {
+      const pointer = lookupEucKrCodePoint(codePoint);
+      if (pointer === null) {
         buf[byteOffset] = 0x3f; // ?
         byteOffset++;
         continue;
