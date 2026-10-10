@@ -5,7 +5,9 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs, type ParseArgsOptionsConfig } from "node:util";
 
-import { format } from "oxfmt";
+import { format, type FormatConfig } from "oxfmt";
+
+import oxfmtConfig from "../.oxfmtrc.json" with { type: "json" };
 
 type Indexes = Record<string, (number | null)[]>;
 
@@ -119,7 +121,14 @@ const main = async () => {
     encodings.map(async ({ encoding, data }) =>
       writeFile(
         join(ENCODINGS_DIR, `${encoding}.json`),
-        (await format(`${encoding}.json`, JSON.stringify(data))).code,
+        (
+          await format(
+            `${encoding}.json`,
+            JSON.stringify(data),
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- oxfmtConfig is a FormatConfig
+            oxfmtConfig as FormatConfig,
+          )
+        ).code,
         { encoding: "utf-8" },
       ),
     ),
