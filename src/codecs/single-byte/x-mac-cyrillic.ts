@@ -2,9 +2,12 @@ import x_mac_cyrillic from "../../../encodings/x-mac-cyrillic.json" with { type:
 import type { Encoder, Decoder } from "../../interfaces.js";
 import { encodeSingleByteEncoding } from "../../utils/encodeSingleByteEncoding.js";
 import { getCachedTextDecoder } from "../../utils/getCachedTextDecoder.js";
+import { getSingleByteEncodingIndex } from "../../utils/getSingleByteEncodingIndex.js";
+
+const x_mac_cyrillic_index = getSingleByteEncodingIndex(x_mac_cyrillic);
 
 const encode: Encoder = (input) => {
-  return encodeSingleByteEncoding(input, x_mac_cyrillic);
+  return encodeSingleByteEncoding(input, x_mac_cyrillic_index);
 };
 
 const decode: Decoder = (input, decodeOptions) => {

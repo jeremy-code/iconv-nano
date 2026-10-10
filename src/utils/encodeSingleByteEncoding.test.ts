@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { encodeSingleByteEncoding } from "./encodeSingleByteEncoding.js";
 
-const encodingIndex = Array.from({
-  length: 128,
-  0: "€".codePointAt(0),
-  0x69: "é".codePointAt(0),
-  0x7f: "я".codePointAt(0),
-}).map((val) => (val === undefined ? null : val));
+const encodingIndex = Object.fromEntries(
+  Object.entries({ "€": 0, é: 0x69, я: 0x7f }).map((entry) => [
+    entry[0].codePointAt(0)!,
+    entry[1],
+  ]),
+);
 
 // UTF-8 is compatible with ASCII
 const textEncoder = new TextEncoder();
@@ -26,12 +26,15 @@ describe("encodeSingleByteEncoding", () => {
     );
   });
 
-  it.for(Object.entries({ "€": 0, é: 0x69, я: 0x7f }))(
+  it.for(Object.entries(encodingIndex))(
     "returns non-ASCII characters (%s) as 0x80 + their value (%d)",
     ([codePoint, value]) => {
-      expect(encodeSingleByteEncoding(codePoint, encodingIndex)).toEqual(
-        new Uint8Array([0x80 + value]),
-      );
+      expect(
+        encodeSingleByteEncoding(
+          String.fromCodePoint(Number(codePoint)),
+          encodingIndex,
+        ),
+      ).toEqual(new Uint8Array([0x80 + value]));
     },
   );
 
@@ -70,8 +73,11 @@ describe("encodeSingleByteEncoding", () => {
 
   // ASCII should not be mapped incorrectly
   it("does not look up ASCII characters in the index", () => {
-    expect(encodeSingleByteEncoding("a", ["a".codePointAt(0)!])).toEqual(
-      textEncoder.encode("a"),
-    );
+    expect(
+      encodeSingleByteEncoding(
+        "a",
+        Object.fromEntries([["a".codePointAt(0)!, 0]]),
+      ),
+    ).toEqual(textEncoder.encode("a"));
   });
 });

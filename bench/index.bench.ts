@@ -44,7 +44,7 @@ describe("encoding performance", () => {
         return codec.encode(input);
       }).run();
 
-      expect(result.throughput.mean).toBeGreaterThan(30_000);
+      expect(result.throughput.mean).toBeGreaterThan(80_000);
     },
   );
 });

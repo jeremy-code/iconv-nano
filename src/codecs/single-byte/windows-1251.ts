@@ -2,9 +2,12 @@ import windows_1251 from "../../../encodings/windows-1251.json" with { type: "js
 import type { Encoder, Decoder } from "../../interfaces.js";
 import { encodeSingleByteEncoding } from "../../utils/encodeSingleByteEncoding.js";
 import { getCachedTextDecoder } from "../../utils/getCachedTextDecoder.js";
+import { getSingleByteEncodingIndex } from "../../utils/getSingleByteEncodingIndex.js";
+
+const windows_1251_index = getSingleByteEncodingIndex(windows_1251);
 
 const encode: Encoder = (input) => {
-  return encodeSingleByteEncoding(input, windows_1251);
+  return encodeSingleByteEncoding(input, windows_1251_index);
 };
 
 const decode: Decoder = (input, decodeOptions) => {
