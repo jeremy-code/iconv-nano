@@ -75,13 +75,10 @@ const main = async () => {
   // https://encoding.spec.whatwg.org/#indexes
   const encodings = Object.entries(indexes).flatMap<{
     encoding: string;
-    data: Record<string, number> | [number, number][];
+    data: Record<string, number> | [number, number][] | (number | null)[];
   }>(([encoding, encodingIndexArray]) => {
     if (encoding === "gb18030-ranges") {
-      return [
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- gb18030-ranges has a different type to represent ranges
-        { encoding, data: encodingIndexArray as unknown as [number, number][] },
-      ];
+      return [{ encoding, data: encodingIndexArray }];
     } else if (encoding === "big5") {
       const encodingIndex = parseEncodingIndexArray(
         encodingIndexArray.fill(null, 0, (0xa1 - 0x81) * 157),
@@ -99,6 +96,17 @@ const main = async () => {
       });
 
       return [{ encoding, data: encodingIndex }];
+    } else if (encodingIndexArray.length === 128) {
+      return [
+        {
+          encoding,
+          data: Object.fromEntries(
+            Object.entries(parseEncodingIndexArray(encodingIndexArray)).map(
+              (entry) => [entry[0].codePointAt(0)!, entry[1]],
+            ),
+          ),
+        },
+      ];
     }
 
     const encodingIndex = parseEncodingIndexArray(encodingIndexArray);

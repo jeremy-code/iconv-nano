@@ -4,7 +4,7 @@ import { isAsciiCodePoint } from "./isAsciiCodePoint.js";
 // https://encoding.spec.whatwg.org/#legacy-single-byte-encodings
 const encodeSingleByteEncoding = (
   input: string,
-  encodingIndex: Record<string, number>,
+  encodingIndex: Record<number, number>,
 ): Uint8Array<ArrayBuffer> => {
   const buf = new Uint8Array(input.length);
   let byteOffset = 0;
@@ -16,10 +16,9 @@ const encodeSingleByteEncoding = (
     const codePoint = char.codePointAt(0)!;
     if (isAsciiCodePoint(codePoint)) {
       buf[byteOffset] = codePoint;
-    } else if (char in encodingIndex) {
-      buf[byteOffset] = 0x80 + encodingIndex[char]!;
     } else {
-      buf[byteOffset] = 0x3f; // ?
+      const byte = encodingIndex[codePoint];
+      buf[byteOffset] = byte !== undefined ? 0x80 + byte : 0x3f; /* ? */
     }
     byteOffset++;
   }

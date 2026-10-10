@@ -9,5 +9,6 @@ Modifications were made to the original file based on the [WHATWG encoding spec 
 - [gb18030-ranges.json](./gb18030-ranges.json) was preserved as-is due to the different format used.
 - [shift_jis.json](./shift_jis.json) was generated based on the by modifying the index for jis0208.
 - [big5.json](./big5.json) was generated as described in the specification.
+- Single-byte encodings ([ibm866.json](./ibm866.json), `iso-8859-*.json`, `koi8-*.json`, `windows-*.json`, [x-mac-cyrillic.json](./x-mac-cyrillic.json)) are stored in an object where corresponding bytes are indexed by numerical code point.
 
 The JSON files are imported by `iconv-nano` in the development code but are compiled into minified JavaScript files during build time.
