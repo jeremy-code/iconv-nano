@@ -8,12 +8,15 @@ const encodeSingleByteEncoding = (
 ): Uint8Array<ArrayBuffer> => {
   const buf = new Uint8Array(input.length);
   let byteOffset = 0;
-  // for...of loop is faster
-  // https://jsbm.dev/YK2fFDSwJPc6E
+  // Avoid re-encoding surrogate pairs
   // https://github.com/jeremy-code/iconv-nano/issues/3
-  for (const char of input) {
-    // non-null, 0 is never larger than input.length
-    const codePoint = char.codePointAt(0)!;
+  for (let i = 0; i < input.length; i++) {
+    // non-null, i is never larger than input.length
+    const codePoint = input.codePointAt(i)!;
+    if (codePoint > 0xffff) {
+      i++;
+    }
+
     if (isAsciiCodePoint(codePoint)) {
       buf[byteOffset] = codePoint;
     } else {
