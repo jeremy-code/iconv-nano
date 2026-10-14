@@ -10,11 +10,15 @@ const lookupEucKrCodePoint = decodeVlqRunsLookup(PAYLOAD);
 
 // https://encoding.spec.whatwg.org/#euc-kr-encoder
 const encode: Encoder = (input) => {
-  const buf = new Uint8Array(input.length * 2);
+  const length = input.length;
+  const buf = new Uint8Array(length * 2);
   let byteOffset = 0;
 
-  for (const char of input) {
-    let codePoint = char.codePointAt(0)!;
+  for (let i = 0; i < length; i++) {
+    const codePoint = input.codePointAt(i)!;
+    if (codePoint > 0xffff) {
+      i++;
+    }
     if (isAsciiCodePoint(codePoint)) {
       buf[byteOffset] = codePoint;
       byteOffset++;

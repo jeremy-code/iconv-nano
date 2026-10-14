@@ -64,12 +64,16 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
   input,
   encodeOptions,
 ) => {
+  const length = input.length;
+  const buf = new Uint8Array(length * 4);
   let isGBK = encodeOptions?.isGBK ?? false;
-  const buf = new Uint8Array(input.length * 4);
   let byteOffset = 0;
 
-  for (const char of input) {
-    let codePoint = char.codePointAt(0)!;
+  for (let i = 0; i < length; i++) {
+    const codePoint = input.codePointAt(i)!;
+    if (codePoint > 0xffff) {
+      i++;
+    }
     if (isAsciiCodePoint(codePoint)) {
       buf[byteOffset] = codePoint;
       byteOffset++;
