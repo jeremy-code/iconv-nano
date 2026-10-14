@@ -1,5 +1,13 @@
 # iconv-nano
 
+## 0.0.12
+
+### Patch Changes
+
+- [`032c98f`](https://github.com/jeremy-code/iconv-nano/commit/032c98fb4a80ad5974f9101c16b24425a5a4061c) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: avoid iterator overhead in encodeSingleByteEncoding
+
+- [#20](https://github.com/jeremy-code/iconv-nano/pull/20) [`c97cbbe`](https://github.com/jeremy-code/iconv-nano/commit/c97cbbe687d1371dde383c5d40c7ff05450a301e) Thanks [@cometkim](https://github.com/cometkim)! - Avoid unnecessary iterator overhead, speed up heavy encodings perf by 50-100%
+
 ## 0.0.11
 
 ### Patch Changes
