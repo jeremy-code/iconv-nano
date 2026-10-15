@@ -158,10 +158,10 @@ const main = async () => {
   // https://encoding.spec.whatwg.org/#indexes
   const encodings = Object.entries(indexes).flatMap<{
     encoding: string;
-    data: Record<string, number> | [number, number][] | (number | null)[];
+    data: Record<string, number> | (number | null)[];
   }>(([encoding, encodingIndexArray]) => {
     if (encoding === "gb18030-ranges") {
-      return [{ encoding, data: encodingIndexArray }];
+      return [{ encoding, data: encodingIndexArray.flat() }];
     } else if (encoding === "big5") {
       const encodingIndex = parseEncodingIndexArray(
         encodingIndexArray.fill(null, 0, (0xa1 - 0x81) * 157),

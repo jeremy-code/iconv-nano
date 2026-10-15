@@ -36,13 +36,15 @@ const getGb18030RangesPointer = (codePoint: number) => {
     return 7457;
   }
 
-  let rangeIndex: number | undefined = undefined;
-  let [left, right] = [0, gb18030_ranges.length - 1];
+  let rangeIndex = -1;
+  let left = 0;
+  let right = (gb18030_ranges.length >> 1) - 1;
+
   while (left <= right) {
     const mid = (left + right) >> 1;
-    const currRange = gb18030_ranges[mid]!;
 
-    if (currRange[1]! <= codePoint) {
+    // Code point offset of range `mid` is at the odd index
+    if (gb18030_ranges[mid * 2 + 1]! <= codePoint) {
       rangeIndex = mid;
       left = mid + 1;
     } else {
@@ -51,12 +53,13 @@ const getGb18030RangesPointer = (codePoint: number) => {
   }
 
   /* v8 ignore next -- all non-ASCII Unicode code points are covered by the GB18030 ranges */
-  if (rangeIndex === undefined) {
+  if (rangeIndex === -1) {
     throw new Error("Somehow, no range was found");
   }
 
-  const [pointerOffset, codePointOffset] = gb18030_ranges[rangeIndex]!;
-  return pointerOffset! + codePoint - codePointOffset!;
+  const pointerOffset = gb18030_ranges[rangeIndex * 2]!;
+  const codePointOffset = gb18030_ranges[rangeIndex * 2 + 1]!;
+  return pointerOffset + codePoint - codePointOffset;
 };
 
 // https://encoding.spec.whatwg.org/#gb18030-encoder
