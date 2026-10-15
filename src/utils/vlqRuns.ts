@@ -119,7 +119,7 @@ type VlqRunsLookup = (codePoint: number) => number | null;
 const decodeVlqRunsLookup = (payload: VlqRunsPayload): VlqRunsLookup => {
   const { blockIds, table } = buildVlqRunsTable(decodeVlqRuns(payload));
   return (codePoint) => {
-    if (codePoint > 0x10ffff) {
+    if (codePoint < 0 || codePoint > 0x10ffff) {
       return null;
     }
     const block = blockIds[codePoint >> 8]!;
