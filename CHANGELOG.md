@@ -1,5 +1,13 @@
 # iconv-nano
 
+## 0.0.13
+
+### Patch Changes
+
+- [`f70cb24`](https://github.com/jeremy-code/iconv-nano/commit/f70cb2404b83dcdf09ed5c1ac56e06ceab326366) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: update createIndexMap to handle only number values and exclude -1
+
+- [`68f96a1`](https://github.com/jeremy-code/iconv-nano/commit/68f96a158c16edc11720db020f50aa013e1ea0af) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: use flat gb18030 encoding index data structure
+
 ## 0.0.12
 
 ### Patch Changes
