@@ -1,11 +1,8 @@
-const createIndexMap = <T extends PropertyKey>(
-  values: T[],
-): Record<T, number> => {
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- The return type will be correct in runtime
-  const output = {} as Record<T, number>;
+const createIndexMap = (values: number[]): Record<number, number> => {
+  const output: Record<number, number> = {};
   for (let index = 0; index < values.length; index++) {
     const value = values[index];
-    if (value !== undefined) {
+    if (value !== undefined && value !== -1) {
       output[value] = index;
     }
   }
