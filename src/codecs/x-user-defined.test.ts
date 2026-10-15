@@ -15,13 +15,12 @@ describe("x-user-defined", () => {
   describe("survives roundtrip conversion", () => {
     it.for(
       Object.entries({
-        ASCII: Array.from({ length: 0x7f }, (_, i) =>
-          String.fromCharCode(i),
-        ).join(""),
-        "Unicode Private Use Area (PUA)": Array.from(
-          { length: 0xf7ff - 0xf780 },
-          (_, i) => String.fromCharCode(i + 0xf780),
-        ).join(""),
+        ASCII: String.fromCodePoint(
+          ...Array.from({ length: 0x7f }, (_, i) => i),
+        ),
+        "Unicode Private Use Area (PUA)": String.fromCodePoint(
+          ...Array.from({ length: 0xf7ff - 0xf780 }, (_, i) => i + 0xf780),
+        ),
       }),
     )("%s", ([, input]) => {
       const encodedInput = x_user_defined.encode(input);

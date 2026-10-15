@@ -6,19 +6,13 @@ import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as iso_2022_jp from "./iso-2022-jp.js";
 
 // Every [character, pointer] pair covered by the JIS0208 index, rebuilt from columnar runs
-const jis0208_entries: [string, number][] = [];
-{
-  const { cpStarts, ptrStarts, counts } = decodeVlqRuns(PAYLOAD);
-  for (let i = 0; i < cpStarts.length; i++) {
-    for (
-      let cp = cpStarts[i]!, pointer = ptrStarts[i]!;
-      cp < cpStarts[i]! + counts[i]!;
-      cp++, pointer++
-    ) {
-      jis0208_entries.push([String.fromCodePoint(cp), pointer]);
-    }
-  }
-}
+const { cpStarts, ptrStarts, counts } = decodeVlqRuns(PAYLOAD);
+const jis0208_entries = cpStarts.flatMap((cpStart, i) =>
+  Array.from<unknown, [string, number]>({ length: counts[i]! }, (_, offset) => [
+    String.fromCodePoint(cpStart + offset),
+    ptrStarts[i]! + offset,
+  ]),
+);
 
 const textEncoder = new TextEncoder();
 
@@ -446,10 +440,11 @@ describe("ISO-2022-JP", () => {
   describe("survives roundtrip conversion", () => {
     it.for(
       Object.entries({
-        ASCII: Array.from({ length: 0x7f }, (_, i) => i)
-          .filter((codePoint) => ![0x0e, 0x0f, 0x1b].includes(codePoint))
-          .map((codePoint) => String.fromCharCode(codePoint))
-          .join(""),
+        ASCII: String.fromCodePoint(
+          ...Array.from({ length: 0x7f }, (_, i) => i).filter(
+            (codePoint) => ![0x0e, 0x0f, 0x1b].includes(codePoint),
+          ),
+        ),
         "ISO-2022-JP katakana index":
           Object.keys(iso_2022_jp_katakana).join(""),
       }),

@@ -7,13 +7,11 @@ import * as big5 from "./big5.js";
 // Every character covered by the Big5 index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
 const big5_index = cpStarts
-  .reduce((chars, cpStart, i) => {
-    const count = counts[i]!;
-    for (let cp = cpStart; cp < cpStart + count; cp++) {
-      chars.push(String.fromCodePoint(cp));
-    }
-    return chars;
-  }, [] as string[])
+  .map((cpStart, i) =>
+    String.fromCodePoint(
+      ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),
+    ),
+  )
   .join("");
 
 describe("Big5", () => {
@@ -46,9 +44,9 @@ describe("Big5", () => {
   describe("survives roundtrip conversion", () => {
     it.for(
       Object.entries({
-        ASCII: Array.from({ length: 0x7f }, (_, i) =>
-          String.fromCharCode(i),
-        ).join(""),
+        ASCII: String.fromCharCode(
+          ...Array.from({ length: 0x7f }, (_, i) => i),
+        ),
         "Big5 index": big5_index,
       }),
     )("%s", ([, input]) => {

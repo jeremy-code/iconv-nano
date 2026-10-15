@@ -7,13 +7,11 @@ import * as shift_jis from "./shift_jis.js";
 // Every character covered by the Shift_JIS index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
 const shift_jis_index = cpStarts
-  .reduce((chars, cpStart, i) => {
-    const count = counts[i]!;
-    for (let cp = cpStart; cp < cpStart + count; cp++) {
-      chars.push(String.fromCodePoint(cp));
-    }
-    return chars;
-  }, [] as string[])
+  .map((cpStart, i) =>
+    String.fromCodePoint(
+      ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),
+    ),
+  )
   .join("");
 
 describe("Shift_JIS", () => {
@@ -73,13 +71,13 @@ describe("Shift_JIS", () => {
   describe("survives roundtrip conversion", () => {
     it.for(
       Object.entries({
-        ASCII: Array.from({ length: 0x7f }, (_, i) =>
-          String.fromCharCode(i),
-        ).join(""),
-        "U+0080 (PAD)": String.fromCharCode(0x80),
-        "halfwidth katakana": Array.from({ length: 0xff9f - 0xff61 }, (_, i) =>
-          String.fromCharCode(i + 0xff61),
-        ).join(""),
+        ASCII: String.fromCodePoint(
+          ...Array.from({ length: 0x7f }, (_, i) => i),
+        ),
+        "U+0080 (PAD)": String.fromCodePoint(0x80),
+        "half-width kana": String.fromCodePoint(
+          ...Array.from({ length: 0xff9f - 0xff61 }, (_, i) => i + 0xff61),
+        ),
         "Shift_JIS index": shift_jis_index,
       }),
     )("%s", ([, input]) => {

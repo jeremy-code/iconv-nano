@@ -7,13 +7,11 @@ import * as gbk from "./gbk.js";
 // Every character covered by the GB 18030 index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
 const gb18030_index = cpStarts
-  .reduce((chars, cpStart, i) => {
-    const count = counts[i]!;
-    for (let cp = cpStart; cp < cpStart + count; cp++) {
-      chars.push(String.fromCodePoint(cp));
-    }
-    return chars;
-  }, [] as string[])
+  .map((cpStart, i) =>
+    String.fromCodePoint(
+      ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),
+    ),
+  )
   .join("");
 
 describe("gb18030", () => {
@@ -40,9 +38,9 @@ describe("gb18030", () => {
   describe("survives roundtrip conversion", () => {
     it.for(
       Object.entries({
-        ASCII: Array.from({ length: 0x7f }, (_, i) =>
-          String.fromCharCode(i),
-        ).join(""),
+        ASCII: String.fromCodePoint(
+          ...Array.from({ length: 0x7f }, (_, i) => i),
+        ),
         "GB 18030": gb18030_index,
       }),
     )("%s", ([, input]) => {

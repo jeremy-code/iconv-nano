@@ -7,13 +7,11 @@ import * as euc_kr from "./euc-kr.js";
 // Every character covered by the EUC-KR index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
 const euc_kr_index = cpStarts
-  .reduce((chars, cpStart, i) => {
-    const count = counts[i]!;
-    for (let cp = cpStart; cp < cpStart + count; cp++) {
-      chars.push(String.fromCodePoint(cp));
-    }
-    return chars;
-  }, [] as string[])
+  .map((cpStart, i) =>
+    String.fromCodePoint(
+      ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),
+    ),
+  )
   .join("");
 
 describe("EUC-KR", () => {
@@ -47,9 +45,9 @@ describe("EUC-KR", () => {
   describe("survives roundtrip conversion", () => {
     it.for(
       Object.entries({
-        ASCII: Array.from({ length: 0x7f }, (_, i) =>
-          String.fromCharCode(i),
-        ).join(""),
+        ASCII: String.fromCodePoint(
+          ...Array.from({ length: 0x7f }, (_, i) => i),
+        ),
         "EUC-KR index": euc_kr_index,
       }),
     )("%s", ([, input]) => {

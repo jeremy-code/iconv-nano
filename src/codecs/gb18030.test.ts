@@ -7,13 +7,11 @@ import * as gb18030 from "./gb18030.js";
 // Every character covered by the GB 18030 index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
 const gb18030_index = cpStarts
-  .reduce((chars, cpStart, i) => {
-    const count = counts[i]!;
-    for (let cp = cpStart; cp < cpStart + count; cp++) {
-      chars.push(String.fromCodePoint(cp));
-    }
-    return chars;
-  }, [] as string[])
+  .map((cpStart, i) =>
+    String.fromCodePoint(
+      ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),
+    ),
+  )
   .join("");
 
 describe("gb18030", () => {
@@ -129,9 +127,9 @@ describe("gb18030", () => {
   describe("survives roundtrip conversion", () => {
     it.for(
       Object.entries({
-        ASCII: Array.from({ length: 0x7f }, (_, i) =>
-          String.fromCharCode(i),
-        ).join(""),
+        ASCII: String.fromCodePoint(
+          ...Array.from({ length: 0x7f }, (_, i) => i),
+        ),
         "GB 18030": gb18030_index,
         // These code points intentionally do not survive roundtrip conversion
         // "compatibility table": String.fromCodePoint(...[Array.from({ length: 0xe796 - 0xe78d + 1 }, (_, i) => 0xe78d + i),  [0xe81e, 0xe826, 0xe82b, 0xe82c, 0xe832, 0xe843, 0xe854, 0xe864]].flat()),

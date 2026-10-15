@@ -7,13 +7,11 @@ import * as euc_jp from "./euc-jp.js";
 // Every character covered by the JIS0208 index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
 const jis0208_index = cpStarts
-  .reduce((chars, cpStart, i) => {
-    const count = counts[i]!;
-    for (let cp = cpStart; cp < cpStart + count; cp++) {
-      chars.push(String.fromCodePoint(cp));
-    }
-    return chars;
-  }, [] as string[])
+  .map((cpStart, i) =>
+    String.fromCodePoint(
+      ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),
+    ),
+  )
   .join("");
 
 describe("EUC-JP", () => {
@@ -73,12 +71,12 @@ describe("EUC-JP", () => {
   describe("survives roundtrip conversion", () => {
     it.for(
       Object.entries({
-        ASCII: Array.from({ length: 0x7f }, (_, i) =>
-          String.fromCharCode(i),
-        ).join(""),
-        "half-width kana": Array.from({ length: 0xff9f - 0xff61 }, (_, i) =>
-          String.fromCharCode(i + 0xff61),
-        ).join(""),
+        ASCII: String.fromCodePoint(
+          ...Array.from({ length: 0x7f }, (_, i) => i),
+        ),
+        "half-width kana": String.fromCodePoint(
+          ...Array.from({ length: 0xff9f - 0xff61 }, (_, i) => i + 0xff61),
+        ),
         "JIS0208 index": jis0208_index,
       }),
     )("%s", ([, input]) => {
