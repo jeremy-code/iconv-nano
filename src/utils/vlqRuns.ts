@@ -2,7 +2,7 @@
 // written by `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`
 
 const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-const B64_VALUE: Uint8Array = (() => {
+const B64_VALUE: Uint8Array = /* @__PURE__ */ (() => {
   const table = new Uint8Array(128).fill(255);
   for (let i = 0; i < B64.length; i++) {
     table[B64.charCodeAt(i)] = i;
@@ -116,7 +116,10 @@ type VlqRunsLookup = (codePoint: number) => number | null;
  * (stage 1: block per code point >> 8, stage 2: pointer values)
  * captured by the returned closure, so each lookup is two typed array loads.
  */
-const decodeVlqRunsLookup = (payload: VlqRunsPayload): VlqRunsLookup => {
+
+const decodeVlqRunsLookup = /* @__NO_SIDE_EFFECTS__ */ (
+  payload: VlqRunsPayload,
+): VlqRunsLookup => {
   const { blockIds, table } = buildVlqRunsTable(decodeVlqRuns(payload));
   return (codePoint) => {
     if (codePoint < 0 || codePoint > 0x10ffff) {

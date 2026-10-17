@@ -1,4 +1,6 @@
-const createIndexMap = (values: number[]): Record<number, number> => {
+const createIndexMap = /* @__NO_SIDE_EFFECTS__ */ (
+  values: number[],
+): Record<number, number> => {
   const output: Record<number, number> = {};
   for (let index = 0; index < values.length; index++) {
     const value = values[index];
