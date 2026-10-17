@@ -25,7 +25,7 @@ const encodeSingleByteEncoding = (
     }
     byteOffset++;
   }
-  return buf.slice(0, byteOffset);
+  return buf.length !== byteOffset ? buf.slice(0, byteOffset) : buf;
 };
 
 export { encodeSingleByteEncoding };

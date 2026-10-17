@@ -49,7 +49,7 @@ const encode: Encoder = (input) => {
       byteOffset += 2;
     }
   }
-  return buf.slice(0, byteOffset);
+  return buf.length !== byteOffset ? buf.slice(0, byteOffset) : buf;
 };
 
 const decode: Decoder = (input, decodeOptions) => {

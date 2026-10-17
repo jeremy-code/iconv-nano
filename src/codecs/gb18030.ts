@@ -124,7 +124,7 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       byteOffset += 4;
     }
   }
-  return buf.slice(0, byteOffset);
+  return buf.length !== byteOffset ? buf.slice(0, byteOffset) : buf;
 };
 
 const decode: Decoder = (input, decodeOptions) => {

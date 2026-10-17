@@ -21,7 +21,7 @@ const encode: Encoder = (input) => {
     }
     byteOffset++;
   }
-  return buf.slice(0, byteOffset);
+  return buf.length !== byteOffset ? buf.slice(0, byteOffset) : buf;
 };
 
 const decode: Decoder = (input, decodeOptions) => {
