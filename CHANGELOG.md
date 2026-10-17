@@ -1,5 +1,34 @@
 # iconv-nano
 
+## 0.0.14
+
+### Patch Changes
+
+- [`1676415`](https://github.com/jeremy-code/iconv-nano/commit/1676415586e2fbe16268b0b84469b833b0f4ea88) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: add purity annotations to createIndexMap and decodeVlqRunsLookup functions
+
+  - While not useful right now (due to Rolldown not supporting namespace exports),
+    in the future, it will make treeshaking better for someone who only wants to
+    decode and not encode
+
+- [`3cbee37`](https://github.com/jeremy-code/iconv-nano/commit/3cbee376979da0005d9bd5286526eefeb7dc802f) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: replace buf.set in GB18030 encoding with direct assignments
+
+- [`d350a4b`](https://github.com/jeremy-code/iconv-nano/commit/d350a4b13c2379d41130258838cdee4069012dfd) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: replace buf.set with direct assignments in iso-2022-jp encoder
+
+- [`324958d`](https://github.com/jeremy-code/iconv-nano/commit/324958d7f5dd5c25881ba8e2db8ffac4a2b857d9) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: ignore negative code points in decodeVlqRunsLookup
+
+- [`170cbfd`](https://github.com/jeremy-code/iconv-nano/commit/170cbfddbce38f3b0b9f75fa819f28b24d2df165) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: replace null return in VlqRunsLookup with -1
+
+  - Using -1 instead of null makes the lookup about 10.7% faster on mapped code
+    points. In practice, when benchmarking `encode`, the lookup contributes very
+    little to the runtime cost, so the performance gains are mostly neglible.
+
+- [`93b9d20`](https://github.com/jeremy-code/iconv-nano/commit/93b9d20abb50081a871273152d9f7dd87f2f8595) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: only slice buffer if necessary to avoid extra copy
+
+  - Previously, by default, `.slice` was always used to prevent case of string
+    length and buffer length differing (i.e., surrogate pairs are replaced with
+    '?'). Now, this is only done if necessary to speed up ASCII/single-byte input
+    strings
+
 ## 0.0.13
 
 ### Patch Changes
