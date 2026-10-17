@@ -24,7 +24,7 @@ const encode: Encoder = (input) => {
       byteOffset++;
     } else {
       const pointer = lookupEucKrCodePoint(codePoint);
-      if (pointer === null) {
+      if (pointer === -1) {
         buf[byteOffset] = 0x3f; // ?
         byteOffset++;
         continue;

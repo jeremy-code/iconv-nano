@@ -107,7 +107,7 @@ const encode: Encoder = (input) => {
     const pointer = lookupJis0208CodePoint(codePoint);
 
     // STEP_11
-    if (pointer === null) {
+    if (pointer === -1) {
       if (encoderState === "jis0208") {
         index -= codePointWidth;
         encoderState = "ascii";

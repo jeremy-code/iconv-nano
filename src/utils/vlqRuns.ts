@@ -106,31 +106,30 @@ const buildVlqRunsTable = (runs: VlqRuns): VlqRunsTable => {
   return { blockIds, table };
 };
 
-type VlqRunsLookup = (codePoint: number) => number | null;
+type VlqRunsLookup = (codePoint: number) => number;
 
 /**
  * Decodes a VLQ runs payload and returns a lookup mapping code points to pointers,
- * or null when the code point is not in the index.
+ * or -1 when the code point is not in the index.
  *
  * The payload is materialized into a two-stage table
  * (stage 1: block per code point >> 8, stage 2: pointer values)
  * captured by the returned closure, so each lookup is two typed array loads.
  */
-
 const decodeVlqRunsLookup = /* @__NO_SIDE_EFFECTS__ */ (
   payload: VlqRunsPayload,
 ): VlqRunsLookup => {
   const { blockIds, table } = buildVlqRunsTable(decodeVlqRuns(payload));
   return (codePoint) => {
     if (codePoint < 0 || codePoint > 0x10ffff) {
-      return null;
+      return -1;
     }
     const block = blockIds[codePoint >> 8]!;
     if (block < 0) {
-      return null;
+      return -1;
     }
     const pointer = table[(block << 8) | (codePoint & 0xff)]!;
-    return pointer === 0xffff ? null : pointer;
+    return pointer === 0xffff ? -1 : pointer;
   };
 };
 

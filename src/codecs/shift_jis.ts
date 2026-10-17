@@ -35,7 +35,7 @@ const encode: Encoder = (input) => {
       const pointer = lookupShiftJisCodePoint(
         codePoint === 0x2212 /* − */ ? 0xff0d /* － */ : codePoint,
       );
-      if (pointer === null) {
+      if (pointer === -1) {
         buf[byteOffset] = 0x3f; // ?
         byteOffset++;
         continue;

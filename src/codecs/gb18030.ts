@@ -94,7 +94,7 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
     } else {
       let pointer = lookupGb18030CodePoint(codePoint);
 
-      if (pointer !== null) {
+      if (pointer !== -1) {
         const leading = Math.floor(pointer / 190) + 0x81;
         const trailing = pointer % 190;
         const offset = trailing < 0x3f ? 0x40 : 0x41;
