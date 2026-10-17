@@ -1,5 +1,18 @@
 # iconv-nano
 
+## 0.0.15
+
+### Patch Changes
+
+- [`c4b4b5a`](https://github.com/jeremy-code/iconv-nano/commit/c4b4b5a093c0d68a65200e693cc8cd1a78dbee74) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: change TABLE structure to use single number entries for GB18030 mappings
+
+  - Instead of mapping number to arrays, map number to numbers and manipulate bits
+    to get actual two bytes
+
+- [`d6964f2`](https://github.com/jeremy-code/iconv-nano/commit/d6964f251e57b059c8aeb45a8062a8a59d6682a8) Thanks [@jeremy-code](https://github.com/jeremy-code)! - refactor: simplify decode function by removing manual BOM handling
+
+- [`7361380`](https://github.com/jeremy-code/iconv-nano/commit/7361380bd0eabafff8487c34fa865a8974cbab70) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: add fast path for Uint8Array input in detectEndianness
+
 ## 0.0.14
 
 ### Patch Changes
