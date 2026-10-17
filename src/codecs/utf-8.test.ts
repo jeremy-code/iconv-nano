@@ -32,6 +32,13 @@ describe("UTF-8", () => {
           }),
         ).toBe("Hello world!");
       });
+      it("does nothing when true and there isn't a BOM", () => {
+        expect(
+          utf_8.decode(utf_8.encode("Hello world!"), {
+            stripBOM: true,
+          }),
+        ).toBe("Hello world!");
+      });
       it("does not strip BOM when false", () => {
         expect(
           utf_8.decode(utf_8.encode("\ufeffHello world!"), {
