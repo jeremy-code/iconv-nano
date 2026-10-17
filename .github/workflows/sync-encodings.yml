@@ -39,6 +39,7 @@ jobs:
           delete-branch: true
           add-paths: |
             encodings/*.json
+            encodings/*.ts
             encodings/indexes.sha256
           commit-message: "chore: sync whatwg/encoding encodings"
           title: "chore: sync whatwg/encoding encodings"
