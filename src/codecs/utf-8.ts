@@ -17,27 +17,8 @@ const encode: Encoder = (input) => {
 const decode: Decoder = (input, decodeOptions) => {
   const stripBOM = decodeOptions?.stripBOM ?? true;
 
-  const bytes = ArrayBuffer.isView(input)
-    ? new Uint8Array(input.buffer, input.byteOffset, input.byteLength)
-    : new Uint8Array(input);
-
-  if (
-    stripBOM &&
-    bytes.byteLength >= 3 &&
-    // BOM (0xfeff) in UTF-8 bytes
-    bytes[0] === 0xef &&
-    bytes[1] === 0xbb &&
-    bytes[2] === 0xbf
-  ) {
-    return getCachedTextDecoder("utf-8", {
-      fatal: false,
-      ignoreBOM: !stripBOM,
-    }).decode(input);
-  }
-
   return getCachedTextDecoder("utf-8", {
     fatal: false,
-    // Doesn't do anything for UTF-8, do it manually below
     ignoreBOM: !stripBOM,
   }).decode(input);
 };
