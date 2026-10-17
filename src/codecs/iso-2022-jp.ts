@@ -72,7 +72,9 @@ const encode: Encoder = (input) => {
     if (isAsciiCodePoint(codePoint) && encoderState !== "ascii") {
       index -= codePointWidth;
       encoderState = "ascii";
-      buf.set([0x1b, 0x28, 0x42], byteOffset);
+      buf[byteOffset] = 0x1b;
+      buf[byteOffset + 1] = 0x28;
+      buf[byteOffset + 2] = 0x42;
       byteOffset += 3;
       continue;
     }
@@ -84,7 +86,9 @@ const encode: Encoder = (input) => {
     ) {
       index -= codePointWidth;
       encoderState = "roman";
-      buf.set([0x1b, 0x28, 0x4a], byteOffset);
+      buf[byteOffset] = 0x1b;
+      buf[byteOffset + 1] = 0x28;
+      buf[byteOffset + 2] = 0x4a;
       byteOffset += 3;
       continue;
     }
@@ -107,7 +111,9 @@ const encode: Encoder = (input) => {
       if (encoderState === "jis0208") {
         index -= codePointWidth;
         encoderState = "ascii";
-        buf.set([0x1b, 0x28, 0x42], byteOffset);
+        buf[byteOffset] = 0x1b;
+        buf[byteOffset + 1] = 0x28;
+        buf[byteOffset + 2] = 0x42;
         byteOffset += 3;
         continue;
       }
@@ -120,7 +126,9 @@ const encode: Encoder = (input) => {
     if (encoderState !== "jis0208") {
       index -= codePointWidth;
       encoderState = "jis0208";
-      buf.set([0x1b, 0x24, 0x42], byteOffset);
+      buf[byteOffset] = 0x1b;
+      buf[byteOffset + 1] = 0x24;
+      buf[byteOffset + 2] = 0x42;
       byteOffset += 3;
       continue;
     }
@@ -133,7 +141,9 @@ const encode: Encoder = (input) => {
   // STEP_1
   if (encoderState !== "ascii") {
     encoderState = "ascii";
-    buf.set([0x1b, 0x28, 0x42], byteOffset);
+    buf[byteOffset] = 0x1b;
+    buf[byteOffset + 1] = 0x28;
+    buf[byteOffset + 2] = 0x42;
     byteOffset += 3;
   }
 
