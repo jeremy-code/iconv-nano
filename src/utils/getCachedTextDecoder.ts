@@ -24,7 +24,7 @@ const getCachedTextDecoder = (
     return textDecoderCache.get(cacheKey)!;
   }
 
-  let textDecoder = new TextDecoder(label, options);
+  const textDecoder = new TextDecoder(label, options);
   textDecoderCache.set(cacheKey, textDecoder);
   return textDecoder;
 };
