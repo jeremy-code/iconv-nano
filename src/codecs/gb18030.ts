@@ -87,7 +87,9 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       buf[byteOffset] = 0x80;
       byteOffset++;
     } else if (codePoint in TABLE) {
-      buf.set(TABLE[codePoint]!, byteOffset);
+      const output = TABLE[codePoint]!;
+      buf[byteOffset] = output[0];
+      buf[byteOffset + 1] = output[1];
       byteOffset += 2;
     } else {
       let pointer = lookupGb18030CodePoint(codePoint);
@@ -115,10 +117,10 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       pointer = pointer % (10 * 126);
       const byte3 = Math.floor(pointer / 10);
       const byte4 = pointer % 10;
-      buf.set(
-        [byte1 + 0x81, byte2 + 0x30, byte3 + 0x81, byte4 + 0x30],
-        byteOffset,
-      );
+      buf[byteOffset] = byte1 + 0x81;
+      buf[byteOffset + 1] = byte2 + 0x30;
+      buf[byteOffset + 2] = byte3 + 0x81;
+      buf[byteOffset + 3] = byte4 + 0x30;
       byteOffset += 4;
     }
   }
