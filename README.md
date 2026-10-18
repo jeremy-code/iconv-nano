@@ -374,6 +374,10 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
   </tbody>
 </table>
 
+## Performance
+
+Benchmarks comparing the performance of `iconv-nano` and `iconv-lite` can be found at the following GitHub repository: [jeremy-code/encoding-benchmarks](https://github.com/jeremy-code/encoding-benchmarks).
+
 ## Compatibility
 
 This library relies on the [`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder) API for decoding. The encoding APIs enjoy wide support in most JavaScript runtimes, being avaliable since March 2017 in all major browsers, supported since Node.js 11.0.0, and by Deno and Bun v1.[^1] If you look at the [web-platform-tests for encoding](https://wpt.fyi/results/encoding), browsers are in general spec-compliant in regards to their encoding implementations.
