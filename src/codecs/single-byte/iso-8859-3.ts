@@ -1,13 +1,13 @@
 import iso_8859_3 from "../../../encodings/iso-8859-3.json" with { type: "json" };
 import type { Encoder, Decoder } from "../../interfaces.js";
-import { createIndexMap } from "../../utils/createIndexMap.js";
 import { encodeSingleByteEncoding } from "../../utils/encodeSingleByteEncoding.js";
 import { getCachedTextDecoder } from "../../utils/getCachedTextDecoder.js";
+import { createSingleByteLookup } from "../../utils/singleByte.js";
 
-const iso_8859_3_index = createIndexMap(iso_8859_3);
+const lookupIso88593CodePoint = createSingleByteLookup(iso_8859_3);
 
 const encode: Encoder = (input) => {
-  return encodeSingleByteEncoding(input, iso_8859_3_index);
+  return encodeSingleByteEncoding(input, lookupIso88593CodePoint);
 };
 
 const decode: Decoder = (input, decodeOptions) => {

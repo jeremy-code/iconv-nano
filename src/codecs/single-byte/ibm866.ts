@@ -1,13 +1,13 @@
 import ibm866 from "../../../encodings/ibm866.json" with { type: "json" };
 import type { Encoder, Decoder } from "../../interfaces.js";
-import { createIndexMap } from "../../utils/createIndexMap.js";
 import { encodeSingleByteEncoding } from "../../utils/encodeSingleByteEncoding.js";
 import { getCachedTextDecoder } from "../../utils/getCachedTextDecoder.js";
+import { createSingleByteLookup } from "../../utils/singleByte.js";
 
-const ibm866Index = createIndexMap(ibm866);
+const lookupIbm866CodePoint = createSingleByteLookup(ibm866);
 
 const encode: Encoder = (input) => {
-  return encodeSingleByteEncoding(input, ibm866Index);
+  return encodeSingleByteEncoding(input, lookupIbm866CodePoint);
 };
 
 const decode: Decoder = (input, decodeOptions) => {

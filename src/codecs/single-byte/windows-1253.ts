@@ -1,13 +1,13 @@
 import windows_1253 from "../../../encodings/windows-1253.json" with { type: "json" };
 import type { Encoder, Decoder } from "../../interfaces.js";
-import { createIndexMap } from "../../utils/createIndexMap.js";
 import { encodeSingleByteEncoding } from "../../utils/encodeSingleByteEncoding.js";
 import { getCachedTextDecoder } from "../../utils/getCachedTextDecoder.js";
+import { createSingleByteLookup } from "../../utils/singleByte.js";
 
-const windows_1253_index = createIndexMap(windows_1253);
+const lookupWindows1253CodePoint = createSingleByteLookup(windows_1253);
 
 const encode: Encoder = (input) => {
-  return encodeSingleByteEncoding(input, windows_1253_index);
+  return encodeSingleByteEncoding(input, lookupWindows1253CodePoint);
 };
 
 const decode: Decoder = (input, decodeOptions) => {
