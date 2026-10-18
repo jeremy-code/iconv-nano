@@ -1,10 +1,11 @@
 import { isAsciiCodePoint } from "./isAsciiCodePoint.js";
+import type { SingleByteLookup } from "./singleByte.js";
 
 // https://encoding.spec.whatwg.org/#single-byte-encoder
 // https://encoding.spec.whatwg.org/#legacy-single-byte-encodings
 const encodeSingleByteEncoding = (
   input: string,
-  encodingIndex: Record<number, number>,
+  singleByteLookup: SingleByteLookup,
 ): Uint8Array<ArrayBuffer> => {
   const buf = new Uint8Array(input.length);
   let byteOffset = 0;
@@ -20,8 +21,8 @@ const encodeSingleByteEncoding = (
     if (isAsciiCodePoint(codePoint)) {
       buf[byteOffset] = codePoint;
     } else {
-      const byte = encodingIndex[codePoint];
-      buf[byteOffset] = byte !== undefined ? 0x80 + byte : 0x3f; /* ? */
+      const byte = singleByteLookup(codePoint);
+      buf[byteOffset] = byte !== -1 ? 0x80 + byte : 0x3f; /* ? */
     }
     byteOffset++;
   }
