@@ -1,5 +1,11 @@
 # iconv-nano
 
+## 0.0.16
+
+### Patch Changes
+
+- [`493f87e`](https://github.com/jeremy-code/iconv-nano/commit/493f87eed9a64f4d2df5f51375ca12f6c6910f6c) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: replace TABLE with getGb18030CompatBytes switch/case
+
 ## 0.0.15
 
 ### Patch Changes
