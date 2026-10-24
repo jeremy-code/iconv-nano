@@ -9,25 +9,50 @@ import { decodeVlqRunsLookup } from "../utils/vlqRuns.js";
 // decoded once on module load (see `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`)
 const lookupGb18030CodePoint = decodeVlqRunsLookup(PAYLOAD);
 
-const TABLE: Record<number, number> = {
-  0xe78d: 0xa6d9,
-  0xe78e: 0xa6da,
-  0xe78f: 0xa6db,
-  0xe790: 0xa6dc,
-  0xe791: 0xa6dd,
-  0xe792: 0xa6de,
-  0xe793: 0xa6df,
-  0xe794: 0xa6ec,
-  0xe795: 0xa6ed,
-  0xe796: 0xa6f3,
-  0xe81e: 0xfe59,
-  0xe826: 0xfe61,
-  0xe82b: 0xfe66,
-  0xe82c: 0xfe67,
-  0xe832: 0xfe6d,
-  0xe843: 0xfe7e,
-  0xe854: 0xfe90,
-  0xe864: 0xfea0,
+// -1 if not a code point with a value in the compatibility table. Using
+// switch/case instead of sparse hash map due to performance
+// (https://github.com/jeremy-code/iconv-nano/issues/27)
+const getGb18030CompatBytes = (codePoint: number): number => {
+  switch (codePoint) {
+    case 0xe78d:
+      return 0xa6d9;
+    case 0xe78e:
+      return 0xa6da;
+    case 0xe78f:
+      return 0xa6db;
+    case 0xe790:
+      return 0xa6dc;
+    case 0xe791:
+      return 0xa6dd;
+    case 0xe792:
+      return 0xa6de;
+    case 0xe793:
+      return 0xa6df;
+    case 0xe794:
+      return 0xa6ec;
+    case 0xe795:
+      return 0xa6ed;
+    case 0xe796:
+      return 0xa6f3;
+    case 0xe81e:
+      return 0xfe59;
+    case 0xe826:
+      return 0xfe61;
+    case 0xe82b:
+      return 0xfe66;
+    case 0xe82c:
+      return 0xfe67;
+    case 0xe832:
+      return 0xfe6d;
+    case 0xe843:
+      return 0xfe7e;
+    case 0xe854:
+      return 0xfe90;
+    case 0xe864:
+      return 0xfea0;
+    default:
+      return -1;
+  }
 };
 
 // https://encoding.spec.whatwg.org/#indexes
@@ -86,12 +111,16 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
     } else if (isGBK && codePoint === 0x20ac) {
       buf[byteOffset] = 0x80;
       byteOffset++;
-    } else if (TABLE[codePoint] !== undefined) {
-      const tableEntry = TABLE[codePoint];
-      buf[byteOffset] = tableEntry >> 8;
-      buf[byteOffset + 1] = tableEntry & 0xff;
-      byteOffset += 2;
     } else {
+      const compatBytes = getGb18030CompatBytes(codePoint);
+
+      if (compatBytes !== -1) {
+        buf[byteOffset] = compatBytes >> 8;
+        buf[byteOffset + 1] = compatBytes & 0xff;
+        byteOffset += 2;
+        continue;
+      }
+
       let pointer = lookupGb18030CodePoint(codePoint);
 
       if (pointer !== -1) {
