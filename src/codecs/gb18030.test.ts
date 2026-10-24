@@ -14,6 +14,32 @@ const gb18030_index = cpStarts
   )
   .join("");
 
+const COMPAT_TABLE: Record<string, readonly [number, number]> =
+  Object.fromEntries(
+    (
+      [
+        [0xe78d, [0xa6, 0xd9]],
+        [0xe78e, [0xa6, 0xda]],
+        [0xe78f, [0xa6, 0xdb]],
+        [0xe790, [0xa6, 0xdc]],
+        [0xe791, [0xa6, 0xdd]],
+        [0xe792, [0xa6, 0xde]],
+        [0xe793, [0xa6, 0xdf]],
+        [0xe794, [0xa6, 0xec]],
+        [0xe795, [0xa6, 0xed]],
+        [0xe796, [0xa6, 0xf3]],
+        [0xe81e, [0xfe, 0x59]],
+        [0xe826, [0xfe, 0x61]],
+        [0xe82b, [0xfe, 0x66]],
+        [0xe82c, [0xfe, 0x67]],
+        [0xe832, [0xfe, 0x6d]],
+        [0xe843, [0xfe, 0x7e]],
+        [0xe854, [0xfe, 0x90]],
+        [0xe864, [0xfe, 0xa0]],
+      ] as const
+    ).map(([codePoint, bytes]) => [String.fromCodePoint(codePoint), bytes]),
+  );
+
 describe("gb18030", () => {
   describe("encode", () => {
     it("correctly encodes sample inputs", () => {
@@ -86,6 +112,13 @@ describe("gb18030", () => {
 
       expect(gb18030.encode("\uE864")).toEqual(new Uint8Array([0xfe, 0xa0]));
     });
+
+    it.for(Object.entries(COMPAT_TABLE))(
+      "encodes GB18030 compatibility characters",
+      ([char, bytes]) => {
+        expect(gb18030.encode(char)).toEqual(new Uint8Array(bytes));
+      },
+    );
 
     it("encodes U+E5E5 as ?", () => {
       expect(gb18030.encode("\uE5E5")).toEqual(new Uint8Array([0x3f]));
