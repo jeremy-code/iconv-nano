@@ -11,7 +11,7 @@ const tsdownConfig: UserConfig = defineConfig({
       name: "minify-json-plugin",
       renderChunk: {
         filter: {
-          code: [/^\/\/#region encodings\/[^/]+\.json\r?\n/],
+          code: [/^\/\/ encodings\/[^/]+\.json\r?\n/],
         },
         handler(code, chunk) {
           if (chunk.name.endsWith("json")) {
