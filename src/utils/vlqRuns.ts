@@ -136,4 +136,4 @@ const decodeVlqRunsLookup = /* @__NO_SIDE_EFFECTS__ */ (
 };
 
 export { decodeVlqRuns, decodeVlqRunsLookup };
-export type { VlqRuns, VlqRunsPayload };
+export type { VlqRuns, VlqRunsPayload, VlqRunsLookup };

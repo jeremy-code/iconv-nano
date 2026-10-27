@@ -193,20 +193,8 @@ const main = async () => {
       ];
     }
 
-    const encodingIndex = parseEncodingIndexArray(encodingIndexArray);
-
-    if (encoding === "jis0208") {
-      return [
-        { encoding, data: encodingIndex },
-        {
-          encoding: "shift_jis",
-          data: parseEncodingIndexArray(
-            encodingIndexArray.fill(null, 8272, 8835),
-          ),
-        },
-      ];
-    }
-    return [{ encoding, data: encodingIndex }];
+    // Shift_JIS has no index: its encoder reuses the jis0208 index (src/codecs/shift_jis.ts)
+    return [{ encoding, data: parseEncodingIndexArray(encodingIndexArray) }];
   });
 
   await Promise.all(
