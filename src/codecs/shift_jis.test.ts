@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PAYLOAD } from "../../encodings/shift_jis.js";
+import { PAYLOAD } from "../../encodings/jis0208.js";
 import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as shift_jis from "./shift_jis.js";
 
@@ -57,6 +57,38 @@ describe("Shift_JIS", () => {
       const encodedInput = shift_jis.encode("−");
       expect(encodedInput).toEqual(shift_jis.encode("－"));
       expect(shift_jis.decode(encodedInput)).toBe("－");
+    });
+
+    // The Shift_JIS encoder excludes pointers 0x2050 to 0x2283 (NEC-selected
+    // IBM extensions - leading byte 0xED and 0xEE), so encode these characters
+    // with duplicate pointer in the IBM extension area (leading byte 0xFA to 0xFC)
+    // or an earlier JIS0208 pointer
+    it("never encodes using NEC selected IBM extensions", () => {
+      expect.hasAssertions();
+      [0xed, 0xee].forEach((leading) =>
+        Array.from({ length: 0xfc - 0x40 + 1 }, (_, i) => i + 0x40).forEach(
+          (trailing) => {
+            if (trailing === 0x7f) {
+              return;
+            }
+            const char = shift_jis.decode(new Uint8Array([leading, trailing]));
+            if (char.length === 0 || char === "\uFFFD") {
+              return;
+            }
+            const encodedChar = shift_jis.encode(char);
+            expect(encodedChar).toHaveLength(2);
+            expect(encodedChar[0]).not.toBeOneOf([0xed, 0xee]);
+            expect(shift_jis.decode(encodedChar)).toBe(char);
+          },
+        ),
+      );
+    });
+
+    it("encodes NEC selected IBM extensions as IBM extensions", () => {
+      // 0xED40 is a duplicate of 0xFA5C
+      expect(shift_jis.encode("纊")).toEqual(new Uint8Array([0xfa, 0x5c]));
+      // 0xEEEF is a duplicate of 0xFA40
+      expect(shift_jis.encode("ⅰ")).toEqual(new Uint8Array([0xfa, 0x40]));
     });
 
     it("encodes unknown characters as ?", () => {

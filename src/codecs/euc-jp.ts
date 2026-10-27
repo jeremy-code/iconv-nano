@@ -1,12 +1,7 @@
-import { PAYLOAD } from "../../encodings/jis0208.js";
 import type { Encoder, Decoder } from "../interfaces.js";
+import { lookupJis0208CodePoint } from "../shared/lookupJis0208CodePoint.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
-import { decodeVlqRunsLookup } from "../utils/vlqRuns.js";
-
-// Code point -> pointer lookup over columnar runs of the JIS0208 reverse index,
-// decoded once on module load (see `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`)
-const lookupJis0208CodePoint = decodeVlqRunsLookup(PAYLOAD);
 
 // https://encoding.spec.whatwg.org/#euc-jp-encoder
 const encode: Encoder = (input) => {
