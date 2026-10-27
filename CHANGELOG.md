@@ -1,5 +1,22 @@
 # iconv-nano
 
+## 0.0.17
+
+### Patch Changes
+
+- [#29](https://github.com/jeremy-code/iconv-nano/pull/29) [`76e46d3`](https://github.com/jeremy-code/iconv-nano/commit/76e46d3487223b10374cfe52f800b0f8ea25ad90) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: change VLQ runs' blockIds table from Int32Array to Uint16Array
+
+  - There are most 4352 blocks representing for 0x10ffff Unicode code points (the
+    max currently used is Big5 with 228); hence, minor performance gains using
+    Uint16Array instead of Int32Array. This saves 8.7 KB per table
+
+- [#31](https://github.com/jeremy-code/iconv-nano/pull/31) [`a9aabf0`](https://github.com/jeremy-code/iconv-nano/commit/a9aabf09853fa63945c2a6933365db481ca120e2) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: reuse JIS0208 index for EUC-JP, Shift_JIS, ISO-2022-JP codecs
+
+  - Shift_JIS and ISO-2022-JP already used the JIS0208 index, so share that index
+    for memory
+  - Instead of storing Shift_JIS index in memory, reuse JIS0208 index and make
+    mappings manually to avoid unnecessary duplication
+
 ## 0.0.16
 
 ### Patch Changes
