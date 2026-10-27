@@ -62,16 +62,18 @@ const decodeVlqRuns = (payload: VlqRunsPayload): VlqRuns => {
 };
 
 type VlqRunsTable = {
-  /** block id per code point >> 8, -1 when the block has no mapped code point */
-  blockIds: Int32Array;
+  /** block id per code point >> 8, NO_BLOCK when the block has no mapped code point */
+  blockIds: Uint16Array;
   /** pointers laid out per 256-code-point block, 0xffff = unmapped */
   table: Uint16Array;
 };
 
 // Blocks cover the full Unicode code point range: some indexes (big5) map astral code points
 // See https://encoding.spec.whatwg.org/#index-big5-pointer
-const BLOCK_COUNT = (0x10ffff >> 8) + 1;
+const BLOCK_COUNT = (0x10ffff >> 8) + 1; // 4352
 const BLOCK_SIZE = 256;
+// At most BLOCK_COUNT (4352) blocks exist, so 0xffff is never a block id
+const NO_BLOCK = 0xffff;
 
 // Builds an ICU-style two-stage table:
 // O(1) lookups costing ~0.1 ms of build time and 512 B per used 256-code-point block.
@@ -86,7 +88,7 @@ const buildVlqRunsTable = (runs: VlqRuns): VlqRunsTable => {
       present[block] = 1;
     }
   }
-  const blockIds = new Int32Array(BLOCK_COUNT).fill(-1);
+  const blockIds = new Uint16Array(BLOCK_COUNT).fill(NO_BLOCK);
   let usedBlocks = 0;
   for (let block = 0; block < BLOCK_COUNT; block++) {
     if (present[block] === 1) {
@@ -125,7 +127,7 @@ const decodeVlqRunsLookup = /* @__NO_SIDE_EFFECTS__ */ (
       return -1;
     }
     const block = blockIds[codePoint >> 8]!;
-    if (block < 0) {
+    if (block === NO_BLOCK) {
       return -1;
     }
     const pointer = table[(block << 8) | (codePoint & 0xff)]!;
