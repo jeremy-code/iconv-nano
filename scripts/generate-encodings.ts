@@ -3,18 +3,19 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseArgs, type ParseArgsOptionsConfig } from "node:util";
+import { parseArgs } from "node:util";
 
 import { format, type FormatConfig } from "oxfmt";
 
 import oxfmtConfig from "../.oxfmtrc.json" with { type: "json" };
 
 type Indexes = Record<string, (number | null)[]>;
+type EncodingIndex = Record<string, number>;
 
-const ENCODINGS_DIR = fileURLToPath(new URL("../encodings", import.meta.url));
-
-const parseEncodingIndexArray = (encodingIndexArray: Indexes[keyof Indexes]) =>
-  encodingIndexArray.reduce<Record<string, number>>((acc, codePoint, index) => {
+const parseEncodingIndexArray = (
+  encodingIndexArray: Indexes[keyof Indexes],
+): EncodingIndex =>
+  encodingIndexArray.reduce<EncodingIndex>((acc, codePoint, index) => {
     const char = codePoint !== null ? String.fromCodePoint(codePoint) : null;
     if (char !== null && !(char in acc)) {
       acc[char] = index;
@@ -45,9 +46,7 @@ const encodeVlq = (n: number): string => {
 //
 // where each gap is the distance from the end of one run to the start of the next
 // (mostly 0 or small in regular index regions, so most tokens are a single character)
-const encodeVlqRunsPayload = (
-  encodingIndex: Record<string, number>,
-): string => {
+const encodeVlqRunsPayload = (encodingIndex: EncodingIndex): string => {
   const cpStarts: number[] = [];
   const ptrStarts: number[] = [];
   const counts: number[] = [];
@@ -89,10 +88,10 @@ const encodeVlqRunsPayload = (
 
 const serializeEncodingData = (
   encoding: string,
-  data: Record<string, number> | unknown[],
+  data: EncodingIndex | number[],
 ): { fileName: string; source: string } => {
-  const parsed = !Array.isArray(data);
-  if (parsed) {
+  const isParsed = !Array.isArray(data);
+  if (isParsed) {
     return {
       fileName: `${encoding}.ts`,
       source:
@@ -105,42 +104,44 @@ const serializeEncodingData = (
   return { fileName: `${encoding}.json`, source: JSON.stringify(data) };
 };
 
-const generateEncodingsOptions = {
-  force: {
-    type: "boolean",
-    short: "f",
-    default: false,
-  },
-} satisfies ParseArgsOptionsConfig;
+const ENCODINGS_DIR = fileURLToPath(new URL("../encodings", import.meta.url));
+const INDEXES_URL =
+  "https://raw.githubusercontent.com/whatwg/encoding/refs/heads/main/indexes.json";
 
 const main = async () => {
-  const parsedArgs = parseArgs({ options: generateEncodingsOptions });
+  const parsedArgs = parseArgs({
+    options: {
+      force: {
+        type: "boolean",
+        short: "f",
+        default: false,
+      },
+    },
+  });
 
   console.log("Fetching indexes.json from whatwg/encoding...");
-  const responses = await fetch(
-    `https://raw.githubusercontent.com/whatwg/encoding/refs/heads/main/indexes.json`,
-  ).then((response) => [response, response.clone()] as const);
+  const responses = await fetch(INDEXES_URL).then(
+    (response) => [response, response.clone()] as const,
+  );
   const [indexes, sha256Hash]: [Indexes, string] = await Promise.all([
     responses[0].json(),
     responses[1]
-      .bytes()
-      .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
+      .arrayBuffer()
+      .then((arrayBuffer) => crypto.subtle.digest("SHA-256", arrayBuffer))
       .then((arrayBuffer) => new Uint8Array(arrayBuffer).toHex()),
   ]);
   console.log("Fetched!");
 
   if (!parsedArgs.values.force) {
     console.log("Checking indexes.sha256...");
-    const currSha256Hash = await readFile(
+    const prevSha256Hash = await readFile(
       join(ENCODINGS_DIR, `indexes.sha256`),
-      {
-        encoding: "utf-8",
-      },
+      { encoding: "utf-8" },
     )
       .then((hash) => hash.split(/\s+/)[0])
       .catch(() => undefined);
 
-    if (currSha256Hash === sha256Hash) {
+    if (prevSha256Hash === sha256Hash) {
       console.log(
         `indexes.json has not been modified since it was last processed. SHA-256 hash: ${sha256Hash}`,
       );
@@ -151,23 +152,20 @@ const main = async () => {
   await writeFile(
     join(ENCODINGS_DIR, `indexes.sha256`),
     `${sha256Hash}  indexes.json`,
-    { encoding: "utf-8" },
   );
   console.log(`indexes.sha256 has changed. Updating encodings...`);
 
   // https://encoding.spec.whatwg.org/#indexes
   const encodings = Object.entries(indexes).flatMap<{
     encoding: string;
-    data: Record<string, number> | (number | null)[];
+    data: EncodingIndex | number[];
   }>(([encoding, encodingIndexArray]) => {
-    if (encoding === "gb18030-ranges") {
-      return [{ encoding, data: encodingIndexArray.flat() }];
-    } else if (encoding === "big5") {
+    if (encoding === "big5") {
       const encodingIndex = parseEncodingIndexArray(
         encodingIndexArray.fill(null, 0, (0xa1 - 0x81) * 157),
       );
       // Object.fromEntries uses "last key wins" rules
-      const inverseEncodingIndex = Object.fromEntries(
+      const inverseEncodingIndex: EncodingIndex = Object.fromEntries(
         encodingIndexArray.flatMap((codePoint, i) =>
           codePoint !== null ? [[String.fromCodePoint(codePoint), i]] : [],
         ),
@@ -180,15 +178,19 @@ const main = async () => {
 
       return [{ encoding, data: encodingIndex }];
     } else if (
+      // Single-byte encoding
       encodingIndexArray.length === 128 ||
-      encoding === "iso-2022-jp-katakana"
+      encoding === "iso-2022-jp-katakana" ||
+      encoding === "gb18030-ranges"
     ) {
       return [
         {
           encoding,
-          data: Array.from(encodingIndexArray, (v) =>
-            typeof v === "number" ? v : -1,
-          ),
+          // .flat is only necessary for gb18030-ranges, no-op for all other encodings
+          data: encodingIndexArray
+            .flat()
+            // no null values, only number, for isomorphism
+            .map((v) => (typeof v === "number" ? v : -1)),
         },
       ];
     }
@@ -210,7 +212,6 @@ const main = async () => {
             oxfmtConfig as FormatConfig,
           )
         ).code,
-        { encoding: "utf-8" },
       );
     }),
   );
