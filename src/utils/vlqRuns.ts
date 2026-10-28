@@ -2,7 +2,7 @@
 // written by `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`
 
 const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-const B64_VALUE: Uint8Array = /* @__PURE__ */ (() => {
+const B64_VALUE: Uint8Array<ArrayBuffer> = /* @__PURE__ */ (() => {
   const table = new Uint8Array(128).fill(255);
   for (let i = 0; i < B64.length; i++) {
     table[B64.charCodeAt(i)] = i;
@@ -63,9 +63,9 @@ const decodeVlqRuns = (payload: VlqRunsPayload): VlqRuns => {
 
 type VlqRunsTable = {
   /** block id per code point >> 8, NO_BLOCK when the block has no mapped code point */
-  blockIds: Uint16Array;
+  blockIds: Uint16Array<ArrayBuffer>;
   /** pointers laid out per 256-code-point block, 0xffff = unmapped */
-  table: Uint16Array;
+  table: Uint16Array<ArrayBuffer>;
 };
 
 // Blocks cover the full Unicode code point range: some indexes (big5) map astral code points
