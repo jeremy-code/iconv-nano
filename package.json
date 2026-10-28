@@ -44,7 +44,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "generate-encodings": "node ./scripts/generate-encodings.ts",
+    "generate-encodings": "node --import @oxc-node/core/register ./scripts/generate-encodings.ts",
     "ci:publish": "./scripts/publish.sh"
   },
   "devDependencies": {
@@ -53,6 +53,7 @@
     "@changesets/cli": "^3.0.3",
     "@commitlint/cli": "^21.2.4",
     "@commitlint/types": "^21.2.3",
+    "@oxc-node/core": "^1.0.1",
     "@types/node": "^26.6.5",
     "@vitest/browser-playwright": "^5.0.5",
     "@vitest/coverage-v8": "^5.0.5",
