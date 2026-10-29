@@ -104,11 +104,21 @@ const decodeVlqRuns = (payload: VlqRunsPayload): VlqRuns => {
     ptrStart += count + runPtrGap;
   }
 
-  return {
-    cpStarts: Array.from(cpStarts.subarray(0, runCount)),
-    ptrStarts: Array.from(ptrStarts.subarray(0, runCount)),
-    counts: Array.from(runCounts.subarray(0, runCount)),
-  };
+  // oxlint-disable unicorn/no-new-array -- While its semantics are indeed
+  // confusing, it is signficantly faster than creating an Array with
+  // `Array.from({ length })`
+  // https://gist.github.com/jeremy-code/d4ed3acc6a259a4db6801c474fb4f2b8
+  const cpStartsArr = new Array<number>(runCount).fill(0);
+  const ptrStartsArr = new Array<number>(runCount).fill(0);
+  const countsArr = new Array<number>(runCount).fill(0);
+  // oxlint-enable unicorn/no-new-array
+
+  for (let i = 0; i < runCount; i++) {
+    cpStartsArr[i] = cpStarts[i]!;
+    ptrStartsArr[i] = ptrStarts[i]!;
+    countsArr[i] = runCounts[i]!;
+  }
+  return { cpStarts: cpStartsArr, ptrStarts: ptrStartsArr, counts: countsArr };
 };
 
 type VlqRunsTable = {
