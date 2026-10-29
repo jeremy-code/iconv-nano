@@ -1,5 +1,22 @@
 # iconv-nano
 
+## 0.0.19
+
+### Patch Changes
+
+- [`2de2849`](https://github.com/jeremy-code/iconv-nano/commit/2de28493e82fb50e63168a07c4ec35c1d09d7eb8) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: optimize array creation in decodeVlqRuns w/ new Array().fill instead of Array.from
+
+  - 3065 µs (out of 4101 µs) in decodeVlqRuns w/ Array.from -> 282 µs (out of 1189 µs)
+
+- [`ac95e6a`](https://github.com/jeremy-code/iconv-nano/commit/ac95e6a7cbdb26ac68edf5d86b88ff32f71dba15) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: replace generic cache key function with concatenation of values or their defaults
+
+  - Previously, `getCachedTextDecoder` only cached the options that were
+    explicitly given using `Object.entries` and `toSorted`. Since there is only
+    three options, simply concatenate them deterministically. This comes with the
+    change that now the same instance will be returned when options are ommitted
+    (which does not touch on this API since the decoders always pass the same
+    options), but I suspect that is more desirable behavior anyways.
+
 ## 0.0.18
 
 ### Patch Changes
