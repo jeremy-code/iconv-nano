@@ -35,8 +35,7 @@ const lookupShiftJisCodePoint = (codePoint: number): number => {
   if (0x21c5 /* ￤ */ <= pointer && pointer <= 0x21c7 /* ＂ */) {
     return pointer + 2092;
   }
-  // Should not happen. For these 191 pointers, they never appear
-  // because they are unmapped or have an earlier pointer
+  /* v8 ignore start -- Should not happen. For these 191 pointers, they never appear because they are unmapped or have an earlier pointer */
   return -1;
 };
 
