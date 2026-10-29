@@ -10,23 +10,6 @@ const B64_VALUE: Uint8Array<ArrayBuffer> = /* @__PURE__ */ (() => {
   return table;
 })();
 
-const decodeVlqStream = (stream: string): number[] => {
-  const values: number[] = [];
-  let i = 0;
-  while (i < stream.length) {
-    let value = 0;
-    let shift = 0;
-    let digit: number;
-    do {
-      digit = B64_VALUE[stream.charCodeAt(i++)]!;
-      value += (digit & 31) << shift;
-      shift += 5;
-    } while ((digit & 32) !== 0);
-    values.push((value & 1) === 1 ? -(value >>> 1) : value >>> 1);
-  }
-  return values;
-};
-
 type VlqRunsPayload = string & { __type: "VlqRunsPayload" };
 
 type VlqRuns = {
@@ -41,24 +24,91 @@ type VlqRuns = {
 /**
  * Decodes a `<first code point>.<first pointer>.<cp gaps>.<counts>.<pointer gaps>` payload into columnar run arrays
  * (runs are pointer-ordered; both gap columns hold the distance from the end of one run to the start of the next)
+ *
+ * Decoding the VLQ stream and creating the columnar run arrays is done in one pass without an intermediate array
+ * for performance (hence, some code duplication in regards to decodeVlq).
+ *
+ * @see {@link https://github.com/jeremy-code/iconv-nano/pull/15}
  */
 const decodeVlqRuns = (payload: VlqRunsPayload): VlqRuns => {
-  const [firstCp, firstPtr, cpGaps, counts, ptrGaps] = payload.split(".");
-  const runCounts = decodeVlqStream(counts!);
-  const runCpGaps = decodeVlqStream(cpGaps!);
-  const runPtrGaps = decodeVlqStream(ptrGaps!);
-  const cpStarts: number[] = [];
-  const ptrStarts: number[] = [];
-  let cpStart = decodeVlqStream(firstCp!)[0]!;
-  let ptrStart = decodeVlqStream(firstPtr!)[0]!;
-  for (let i = 0; i < runCounts.length; i++) {
-    const count = runCounts[i]!;
-    cpStarts.push(cpStart);
-    ptrStarts.push(ptrStart);
-    cpStart += count + runCpGaps[i]!;
-    ptrStart += count + runPtrGaps[i]!;
+  const firstCpEnd = payload.indexOf(".");
+  const firstPtrEnd = payload.indexOf(".", firstCpEnd + 1);
+  const cpGapsEnd = payload.indexOf(".", firstPtrEnd + 1);
+  const countsEnd = payload.indexOf(".", cpGapsEnd + 1);
+
+  const decodeVlq = (start: number): number => {
+    let value = 0;
+    let shift = 0;
+    let digit: number;
+    do {
+      digit = B64_VALUE[payload.charCodeAt(start++)]!;
+      value += (digit & 31) << shift;
+      shift += 5;
+    } while ((digit & 32) !== 0); // Loop while continuation bit = 1
+    // https://en.wikipedia.org/wiki/Variable-length_integer#Zigzag_encoding
+    return (value & 1) === 1 ? -(value >>> 1) : value >>> 1;
+  };
+
+  let cpStart = decodeVlq(0);
+  let ptrStart = decodeVlq(firstCpEnd + 1);
+  let cpGapIndex = firstPtrEnd + 1;
+  let countIndex = cpGapsEnd + 1;
+  let ptrGapIndex = countsEnd + 1;
+  const capacity = countsEnd - countIndex;
+  const cpStarts = new Int32Array(capacity);
+  const ptrStarts = new Int32Array(capacity);
+  const runCounts = new Int32Array(capacity);
+
+  let runCount = 0;
+  while (countIndex < countsEnd) {
+    // Equivalent to decodeVlq, inlining as countIndex needs to be mutated
+    let value = 0;
+    let shift = 0;
+    let digit: number;
+    do {
+      digit = B64_VALUE[payload.charCodeAt(countIndex++)]!;
+      value += (digit & 31) << shift;
+      shift += 5;
+    } while ((digit & 32) !== 0);
+    const count = (value & 1) === 1 ? -(value >>> 1) : value >>> 1;
+    cpStarts[runCount] = cpStart;
+    ptrStarts[runCount] = ptrStart;
+    runCounts[runCount] = count;
+    runCount++;
+
+    let runCpGap = 0;
+    if (cpGapIndex < cpGapsEnd) {
+      // Equivalent to decodeVlq, inlining as cpGapIndex needs to be mutated
+      value = 0;
+      shift = 0;
+      do {
+        digit = B64_VALUE[payload.charCodeAt(cpGapIndex++)]!;
+        value += (digit & 31) << shift;
+        shift += 5;
+      } while ((digit & 32) !== 0);
+      runCpGap = (value & 1) === 1 ? -(value >>> 1) : value >>> 1;
+    }
+    let runPtrGap = 0;
+    if (ptrGapIndex < payload.length) {
+      // Equivalent to decodeVlq, inlining as ptrGapIndex needs to be mutated
+      value = 0;
+      shift = 0;
+      do {
+        digit = B64_VALUE[payload.charCodeAt(ptrGapIndex++)]!;
+        value += (digit & 31) << shift;
+        shift += 5;
+      } while ((digit & 32) !== 0);
+      runPtrGap = (value & 1) === 1 ? -(value >>> 1) : value >>> 1;
+    }
+    cpStart += count + runCpGap;
+    ptrStart += count + runPtrGap;
   }
-  return { cpStarts, ptrStarts, counts: runCounts };
+
+  return {
+    cpStarts: Array.from(cpStarts.subarray(0, runCount)),
+    ptrStarts: Array.from(ptrStarts.subarray(0, runCount)),
+    counts: Array.from(runCounts.subarray(0, runCount)),
+  };
 };
 
 type VlqRunsTable = {
