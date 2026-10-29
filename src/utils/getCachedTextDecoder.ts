@@ -13,13 +13,11 @@ const getCachedTextDecoder = (
   options?: TextDecoderOptions,
 ): TextDecoder => {
   const cacheKey =
-    (label ?? "") +
-    (options
-      ? Object.entries(options)
-          // Ascending order
-          .toSorted((a, b) => (a[0] < b[0] ? -1 : 1))
-          .join()
-      : "");
+    // Default label per https://encoding.spec.whatwg.org/#textdecoder
+    (label ?? "utf-8") +
+    // Default values per https://encoding.spec.whatwg.org/#textdecoderoptions
+    (options?.fatal ?? false) +
+    (options?.ignoreBOM ?? false);
   if (textDecoderCache.has(cacheKey)) {
     return textDecoderCache.get(cacheKey)!;
   }

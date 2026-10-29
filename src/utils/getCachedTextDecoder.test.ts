@@ -11,6 +11,22 @@ describe("getCachedTextDecoder", () => {
     expect(getCachedTextDecoder()).toHaveProperty("encoding", "utf-8");
   });
 
+  it("return TextEncoder with correct default properties when no arguments are given", () => {
+    const defaultTextDecoder = new TextDecoder();
+    expect(getCachedTextDecoder()).toHaveProperty(
+      "encoding",
+      defaultTextDecoder.encoding,
+    );
+    expect(getCachedTextDecoder()).toHaveProperty(
+      "fatal",
+      defaultTextDecoder.fatal,
+    );
+    expect(getCachedTextDecoder()).toHaveProperty(
+      "ignoreBOM",
+      defaultTextDecoder.ignoreBOM,
+    );
+  });
+
   it("normalizes labels to the canonical encoding name", () => {
     expect(getCachedTextDecoder("latin1")).toHaveProperty(
       "encoding",
@@ -52,9 +68,9 @@ describe("getCachedTextDecoder", () => {
     );
   });
 
-  it("returns a different instance with and without options", () => {
-    expect(getCachedTextDecoder("utf-8")).not.toBe(
-      getCachedTextDecoder("utf-8", { fatal: true }),
+  it("returns the same instance with and without options", () => {
+    expect(getCachedTextDecoder("utf-8")).toBe(
+      getCachedTextDecoder("utf-8", { fatal: false, ignoreBOM: false }),
     );
   });
 
