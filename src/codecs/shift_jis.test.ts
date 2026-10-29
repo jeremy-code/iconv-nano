@@ -4,6 +4,29 @@ import { PAYLOAD } from "../../encodings/jis0208.js";
 import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as shift_jis from "./shift_jis.js";
 
+const jis0208UniqueCodepoints = Array.from(
+  new TextDecoder("iso-2022-jp").decode(
+    new Uint8Array([
+      0x1b, // jis0208 escape sequence
+      0x24,
+      0x42,
+      // Pointers in range 8272 to 8835, inclusive
+      ...Array.from({ length: 0x2283 - 0x2050 }, (_, i) => i + 0x2050).flatMap(
+        (pointer) => [(pointer >> 8) & 0xff, pointer & 0xff], // Big endian
+      ),
+      0x1b, // ascii escape sequence
+      0x28,
+      0x42,
+    ]),
+  ),
+  (char) => char.codePointAt(0),
+).flatMap((codePoint) =>
+  codePoint !== undefined &&
+  codePoint !== 0xfffd /* unicode replacement character */
+    ? [codePoint]
+    : [],
+);
+
 // Every character covered by the Shift_JIS index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
 const shift_jis_index = cpStarts
@@ -111,6 +134,9 @@ describe("Shift_JIS", () => {
           ...Array.from({ length: 0xff9f - 0xff61 }, (_, i) => i + 0xff61),
         ),
         "Shift_JIS index": shift_jis_index,
+        "JIS0208 excluded codepoints": String.fromCodePoint(
+          ...jis0208UniqueCodepoints,
+        ),
       }),
     )("%s", ([, input]) => {
       const encodedInput = shift_jis.encode(input);
