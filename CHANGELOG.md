@@ -1,5 +1,17 @@
 # iconv-nano
 
+## 0.0.18
+
+### Patch Changes
+
+- [`8e0f2d0`](https://github.com/jeremy-code/iconv-nano/commit/8e0f2d05324c1ce28e05c1f01b4920f2ebf688d0) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: correct regex pattern for JSON encoding filter in minify-json-plugin
+
+- [`660550f`](https://github.com/jeremy-code/iconv-nano/commit/660550f90887c14f2254a714d1460fcbe8b6a29f) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: specify ArrayBuffer type for Typed Arrays in vlqRuns.ts
+
+- [#33](https://github.com/jeremy-code/iconv-nano/pull/33) [`ddaf6a6`](https://github.com/jeremy-code/iconv-nano/commit/ddaf6a64e678b5b258e635b73f669398b95767d5) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: decode VLQ run payloads in a single pass into typed arrays
+
+  - 4.0 ms -> 1.9 ms (~2x faster) w/ warmup, 26.0 ms -> 16.4 ms cold start
+
 ## 0.0.17
 
 ### Patch Changes
