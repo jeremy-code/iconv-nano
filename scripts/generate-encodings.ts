@@ -138,18 +138,16 @@ const main = async () => {
   });
 
   await Promise.all(
-    encodings.map(async ({ encoding, data }) => {
+    encodings.map(({ encoding, data }) => {
       const { fileName, source } = serializeEncodingData(encoding, data);
-      await writeFile(
-        join(ENCODINGS_DIR, fileName),
-        (
-          await format(
-            fileName,
-            source,
-            // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- oxfmtConfig is a FormatConfig
-            oxfmtConfig as FormatConfig,
-          )
-        ).code,
+
+      return format(
+        fileName,
+        source,
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- oxfmtConfig is a FormatConfig
+        oxfmtConfig as FormatConfig,
+      ).then((formatResult) =>
+        writeFile(join(ENCODINGS_DIR, fileName), formatResult.code),
       );
     }),
   );
