@@ -1,5 +1,15 @@
 # iconv-nano
 
+## 0.0.20
+
+### Patch Changes
+
+- [`72cea19`](https://github.com/jeremy-code/iconv-nano/commit/72cea19b581ced41313e432e1fd844782e75631f) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: replace VlqRuns arrays with Uint32Array and use .subarray
+
+  - 282 µs (out of 1189 µs) -> ~1 µs (out of 992 µs); memory ~917 KB -> ~449 KB
+  - Since the output is immediately used to build the table, the Uint32Arrays are GC'd immediately
+  - No change to public API
+
 ## 0.0.19
 
 ### Patch Changes
