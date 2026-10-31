@@ -1,6 +1,6 @@
 {
   "name": "iconv-nano",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Tree-shakable ESM iconv-lite for encoding and decoding",
   "keywords": [
     "encoding",
