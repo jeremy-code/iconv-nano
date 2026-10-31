@@ -12,12 +12,20 @@
 
 [![GitHub Actions][github-actions-badge]][github-actions] [![License][license-badge]](LICENSE) [![NPM version][npm-version-badge]][npm-package] [![Code coverage][code-coverage-badge]][code-coverage] [![NPM package size][npm-package-size-badge]][npm-package-size]
 
-Documentation is avaliable at this URL: https://npmx.dev/package-docs/iconv-nano.
+Documentation is available at this URL: <https://npmx.dev/package-docs/iconv-nano>.
+
+## Installation
+
+```shell
+npm install iconv-nano # npm
+yarn add iconv-nano    # yarn
+pnpm add iconv-nano    # pnpm
+```
 
 ## Features
 
 - Tree-shakable
-- Isomorphic: uses Uint8Array and TextEncoder/TextDecoder APIs
+- Isomorphic: uses `Uint8Array` and `TextEncoder`/`TextDecoder` APIs
 - Supports all WHATWG encodings
 
 ## Usage
@@ -34,11 +42,11 @@ iconv.ascii.decode(Uint8Array.fromHex("3f")); // "?"
 iconv.utf16.encode("😅", { endianness: "little-endian" }).toHex(); // "3dd805de"
 iconv.utf16.decode(Uint8Array.fromHex("3dd805de")); // "😅"
 
-iconv.shift_jis.encode("文字化け"); // "95b68e9a89bb82af"
+iconv.shift_jis.encode("文字化け").toHex(); // "95b68e9a89bb82af"
 iconv.shift_jis.decode(Uint8Array.fromHex("95b68e9a89bb82af")); // "文字化け"
 ```
 
-The [namespace import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) is important for tree-shaking since it allows you to selectively choose which encodings to use while still being statically analyzable.
+The [namespace import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) is important for tree-shaking since it allows you to selectively choose which encodings to use while remaining statically analyzable.
 
 If you need string labels for encoding and still want the benefits of tree-shaking, you can do that with a constant like this:
 
@@ -77,7 +85,7 @@ const getBytes = (
 
 ## Supported encodings
 
-All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.whatwg.org) are supported. Their aliases also have been exported.
+All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.whatwg.org) are supported. Their aliases have also been exported.
 
 <table>
   <thead>
@@ -106,7 +114,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
       </td>
     </tr>
     <tr>
-      <td><a href="https://en.wikipedia.org/wiki/Code_page_866">IBM866</a></td>
+      <td><a href="https://en.wikipedia.org/wiki/Code_page_866">IBM-866</a></td>
       <td>ibm866</td>
     </tr>
     <tr>
@@ -197,75 +205,75 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Mac_OS_Roman">macintosh</a>
+        <a href="https://en.wikipedia.org/wiki/Mac_OS_Roman">Mac OS Roman</a>
       </td>
       <td>macintosh</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-874">windows-874</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-874">Windows-874</a>
       </td>
       <td>windows_874</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1250">windows-1250</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1250">Windows-1250</a>
       </td>
       <td>windows_1250</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1251">windows-1251</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1251">Windows-1251</a>
       </td>
       <td>windows_1251</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1252">windows-1252</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1252">Windows-1252</a>
       </td>
       <td>windows_1252</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1253">windows-1253</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1253">Windows-1253</a>
       </td>
       <td>windows_1253</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1254">windows-1254</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1254">Windows-1254</a>
       </td>
       <td>windows_1254</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1255">windows-1255</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1255">Windows-1255</a>
       </td>
       <td>windows_1255</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1256">windows-1256</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1256">Windows-1256</a>
       </td>
       <td>windows_1256</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1257">windows-1257</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1257">Windows-1257</a>
       </td>
       <td>windows_1257</td>
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Windows-1258">windows-1258</a>
+        <a href="https://en.wikipedia.org/wiki/Windows-1258">Windows-1258</a>
       </td>
       <td>windows_1258</td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Mac_OS_Cyrillic_encoding"
-          >x-mac-cyrillic</a
-        >
+          >Mac OS Cyrillic</a
+        > (`x-mac-cyrillic`)
       </td>
       <td>x_mac_cyrillic</td>
     </tr>
@@ -324,7 +332,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
       <td>iso_2022_jp</td>
     </tr>
     <tr>
-      <td><a href="https://en.wikipedia.org/wiki/Shift_JIS">Shift_JIS</a></td>
+      <td><a href="https://en.wikipedia.org/wiki/Shift_JIS">Shift JIS</a></td>
       <td>shift_jis</td>
     </tr>
     <tr>
@@ -376,22 +384,26 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
 
 ## Performance
 
-Benchmarks comparing the performance of `iconv-nano` and `iconv-lite` can be found at the following GitHub repository: [jeremy-code/encoding-benchmarks](https://github.com/jeremy-code/encoding-benchmarks).
+Benchmarks comparing the performance of `iconv-nano` and `iconv-lite` can be found at the following GitHub repository: [jeremy-code/encoding-benchmarks](https://github.com/jeremy-code/encoding-benchmarks). Broadly, `iconv-nano` is either on-par or faster with `iconv-lite` when encoding, and usually faster than it when decoding. This becomes especially true when comparing performance in the browser where the Node.js Buffer API has been polyfilled for `iconv-lite`'s use.
 
 ## Compatibility
 
-This library relies on the [`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder) API for decoding. The encoding APIs enjoy wide support in most JavaScript runtimes, being avaliable since March 2017 in all major browsers, supported since Node.js 11.0.0, and by Deno and Bun v1.[^1] If you look at the [web-platform-tests for encoding](https://wpt.fyi/results/encoding), browsers are in general spec-compliant in regards to their encoding implementations.
+This library relies on the [`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder) API for decoding. The [Encoding API](https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API) enjoys wide support in most JavaScript runtimes, being available since March 2017 in all major browsers[^1] and supported since Node.js v11.0.0,[^1] Deno v0.2.2,[^2] and Bun v0.1.0.[^3] If you look at the [web-platform-tests for encoding](https://wpt.fyi/results/encoding), browsers are in general spec-compliant with regard to their encoding implementations.
 
-In regards to server runtimes, I tested them on the TextDecoder portions of tests by web-platform-tests for encoding. Deno (v2.9.7) passed all tests. Bun (v1.4.2) failed one test ([fatal stream: iso-2022-jp](https://github.com/web-platform-tests/wpt/blob/788584597a223265879760fd2633f7859d09e5ad/encoding/textdecoder-mistakes.any.js#L671-L688)) though not on a part of the API this library touches. As of Node.js v26.10.0, the following encodings seem to have issues: ISO-2022-JP, Big5, EUC-JP, EUC-KR, Shift_JIS. For those encodings, consider using a TextDecoder polyfill such as [@exodus/bytes](https://npmjs.com/@exodus/bytes).
+I tested server runtimes' implementations of `TextDecoder` on the encoding-related tests in the [web-platform-tests](https://github.com/web-platform-tests/wpt) test suite. Deno (v2.9.7) passed all tests. Bun (v1.4.2) failed one test ([fatal stream: iso-2022-jp](https://github.com/web-platform-tests/wpt/blob/788584597a223265879760fd2633f7859d09e5ad/encoding/textdecoder-mistakes.any.js#L671-L688)), though not on a part of the API this library touches. As of Node.js v26.10.0, the following encodings seem to have some issues: ISO-2022-JP, Big5, EUC-JP, EUC-KR, Shift JIS. For those encodings, consider using a `TextDecoder` polyfill such as [@exodus/bytes](https://npmjs.com/@exodus/bytes).
 
-For a detailed table of encoding API support across runtimes, please see this [spreadsheet](https://docs.google.com/spreadsheets/d/1pdEefRG6r9fZy61WHGz0TKSt8cO4ISWqlpBN5KntIvQ/edit) by [ChALkeR](https://github.com/ChALkeR), creator of [@exodus/bytes](https://npmjs.com/@exodus/bytes).
-
-[^1]: https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder#browser_compatibility
+For a detailed table of encoding API support across runtimes, please review this [spreadsheet](https://docs.google.com/spreadsheets/d/1pdEefRG6r9fZy61WHGz0TKSt8cO4ISWqlpBN5KntIvQ/edit) by [ChALkeR](https://github.com/ChALkeR), creator of [@exodus/bytes](https://npmjs.com/@exodus/bytes).
 
 ## Notes
 
-I'm waiting on ESM [namespace imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) in Rolldown ([rolldown/rolldown#7874](https://github.com/rolldown/rolldown/issues/7874)) to be supported. It looks like it will be coming on Rolldown 1.4. While tree-shaking will still work for encodings, the individual `encode`/`decode` functions cannot be treeshook until this is resolved.
+I'm waiting on ESM [namespace imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) in Rolldown ([rolldown/rolldown#7874](https://github.com/rolldown/rolldown/issues/7874)) to be supported. It looks like it will be coming in Rolldown 1.4. While tree-shaking will still work for encodings, the individual `encode`/`decode` functions cannot be tree-shaken until this is resolved.
 
 ## License
 
 This project is licensed under the BSD-2 Clause license. See the [LICENSE](LICENSE) file for details.
+
+[^1]: https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder#browser_compatibility
+
+[^2]: https://github.com/denoland/deno/blob/main/Releases.md#v022--20181207
+
+[^3]: https://github.com/oven-sh/bun/commit/43de33afc7fcc4cab25f578566e225ba9e4d4258
