@@ -6,7 +6,7 @@ import * as big5 from "./big5.js";
 
 // Every character covered by the Big5 index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
-const big5_index = cpStarts
+const big5_index = Array.from(cpStarts)
   .map((cpStart, i) =>
     String.fromCodePoint(
       ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),

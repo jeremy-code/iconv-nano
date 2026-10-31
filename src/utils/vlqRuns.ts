@@ -14,11 +14,11 @@ type VlqRunsPayload = string & { __type: "VlqRunsPayload" };
 
 type VlqRuns = {
   /** first code point of each run (runs are pointer-ordered) */
-  cpStarts: number[];
+  cpStarts: Int32Array<ArrayBuffer>;
   /** first pointer of each run */
-  ptrStarts: number[];
+  ptrStarts: Int32Array<ArrayBuffer>;
   /** run lengths */
-  counts: number[];
+  counts: Int32Array<ArrayBuffer>;
 };
 
 /**
@@ -104,21 +104,15 @@ const decodeVlqRuns = (payload: VlqRunsPayload): VlqRuns => {
     ptrStart += count + runPtrGap;
   }
 
-  // oxlint-disable unicorn/no-new-array -- While its semantics are indeed
-  // confusing, it is signficantly faster than creating an Array with
-  // `Array.from({ length })`
-  // https://gist.github.com/jeremy-code/d4ed3acc6a259a4db6801c474fb4f2b8
-  const cpStartsArr = new Array<number>(runCount).fill(0);
-  const ptrStartsArr = new Array<number>(runCount).fill(0);
-  const countsArr = new Array<number>(runCount).fill(0);
-  // oxlint-enable unicorn/no-new-array
-
-  for (let i = 0; i < runCount; i++) {
-    cpStartsArr[i] = cpStarts[i]!;
-    ptrStartsArr[i] = ptrStarts[i]!;
-    countsArr[i] = runCounts[i]!;
-  }
-  return { cpStarts: cpStartsArr, ptrStarts: ptrStartsArr, counts: countsArr };
+  /**
+   * Since the output is immediately used in `buildVlqRunsTable` only to build
+   * the table, it is immmediately garbage collected.
+   */
+  return {
+    cpStarts: cpStarts.subarray(0, runCount),
+    ptrStarts: ptrStarts.subarray(0, runCount),
+    counts: runCounts.subarray(0, runCount),
+  };
 };
 
 type VlqRunsTable = {

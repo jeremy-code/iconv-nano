@@ -6,7 +6,7 @@ import * as euc_kr from "./euc-kr.js";
 
 // Every character covered by the EUC-KR index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
-const euc_kr_index = cpStarts
+const euc_kr_index = Array.from(cpStarts)
   .map((cpStart, i) =>
     String.fromCodePoint(
       ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),

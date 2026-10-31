@@ -7,7 +7,7 @@ import * as iso_2022_jp from "./iso-2022-jp.js";
 
 // Every [character, pointer] pair covered by the JIS0208 index, rebuilt from columnar runs
 const { cpStarts, ptrStarts, counts } = decodeVlqRuns(PAYLOAD);
-const jis0208_entries = cpStarts.flatMap((cpStart, i) =>
+const jis0208_entries = Array.from(cpStarts).flatMap((cpStart, i) =>
   Array.from<unknown, [string, number]>({ length: counts[i]! }, (_, offset) => [
     String.fromCodePoint(cpStart + offset),
     ptrStarts[i]! + offset,

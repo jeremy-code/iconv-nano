@@ -29,7 +29,7 @@ const jis0208UniqueCodepoints = Array.from(
 
 // Every character covered by the Shift_JIS index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
-const shift_jis_index = cpStarts
+const shift_jis_index = Array.from(cpStarts)
   .map((cpStart, i) =>
     String.fromCodePoint(
       ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),

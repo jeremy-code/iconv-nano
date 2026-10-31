@@ -6,7 +6,7 @@ import * as euc_jp from "./euc-jp.js";
 
 // Every character covered by the JIS0208 index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
-const jis0208_index = cpStarts
+const jis0208_index = Array.from(cpStarts)
   .map((cpStart, i) =>
     String.fromCodePoint(
       ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),

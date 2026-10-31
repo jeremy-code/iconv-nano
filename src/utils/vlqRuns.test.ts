@@ -32,27 +32,27 @@ const encodeVlqRunsPayload = (
   runs: { cpStart: number; ptrStart: number; count: number }[],
 ): VlqRunsPayload => {
   const runCount = runs.length;
-  const cpGaps: number[] = [];
-  const ptrGaps: number[] = [];
+  const cpGaps = new Int32Array(runCount);
+  const ptrGaps = new Int32Array(runCount);
 
   if (runCount === 0) {
     throw new Error("At least one run is required");
   }
 
   for (let i = 1; i < runCount; i++) {
-    cpGaps.push(runs[i]!.cpStart - runs[i - 1]!.cpStart - runs[i - 1]!.count);
-    ptrGaps.push(
-      runs[i]!.ptrStart - runs[i - 1]!.ptrStart - runs[i - 1]!.count,
-    );
+    cpGaps[i - 1] =
+      runs[i]!.cpStart - runs[i - 1]!.cpStart - runs[i - 1]!.count;
+    ptrGaps[i - 1] =
+      runs[i]!.ptrStart - runs[i - 1]!.ptrStart - runs[i - 1]!.count;
   }
 
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- VlqRunsPayload is a branded type
   return [
     encodeVlq(runs[0]!.cpStart),
     encodeVlq(runs[0]!.ptrStart),
-    cpGaps.map(encodeVlq).join(""),
+    Array.from(cpGaps).map(encodeVlq).join(""),
     runs.map(({ count }) => encodeVlq(count)).join(""),
-    ptrGaps.map(encodeVlq).join(""),
+    Array.from(ptrGaps).map(encodeVlq).join(""),
   ].join(".") as VlqRunsPayload;
 };
 
@@ -63,9 +63,9 @@ describe("decodeVlqRuns", () => {
         encodeVlqRunsPayload([{ cpStart: 0x41, ptrStart: 10, count: 3 }]),
       ),
     ).toEqual({
-      cpStarts: [0x41],
-      ptrStarts: [10],
-      counts: [3],
+      cpStarts: new Int32Array([0x41]),
+      ptrStarts: new Int32Array([10]),
+      counts: new Int32Array([3]),
     });
   });
 
@@ -79,9 +79,9 @@ describe("decodeVlqRuns", () => {
         ]),
       ),
     ).toEqual({
-      cpStarts: [0x41, 0x50, 0x70],
-      ptrStarts: [10, 20, 30],
-      counts: [2, 3, 1],
+      cpStarts: new Int32Array([0x41, 0x50, 0x70]),
+      ptrStarts: new Int32Array([10, 20, 30]),
+      counts: new Int32Array([2, 3, 1]),
     });
   });
 
@@ -94,9 +94,9 @@ describe("decodeVlqRuns", () => {
         ]),
       ),
     ).toEqual({
-      cpStarts: [100, 102],
-      ptrStarts: [0, 2],
-      counts: [2, 2],
+      cpStarts: new Int32Array([100, 102]),
+      ptrStarts: new Int32Array([0, 2]),
+      counts: new Int32Array([2, 2]),
     });
   });
 
@@ -105,7 +105,11 @@ describe("decodeVlqRuns", () => {
       decodeVlqRuns(
         encodeVlqRunsPayload([{ cpStart: 0x10000, ptrStart: 50000, count: 2 }]),
       ),
-    ).toEqual({ cpStarts: [0x10000], ptrStarts: [50000], counts: [2] });
+    ).toEqual({
+      cpStarts: new Int32Array([0x10000]),
+      ptrStarts: new Int32Array([50000]),
+      counts: new Int32Array([2]),
+    });
   });
 });
 

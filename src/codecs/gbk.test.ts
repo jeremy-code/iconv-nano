@@ -6,7 +6,7 @@ import * as gbk from "./gbk.js";
 
 // Every character covered by the GB 18030 index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
-const gb18030_index = cpStarts
+const gb18030_index = Array.from(cpStarts)
   .map((cpStart, i) =>
     String.fromCodePoint(
       ...Array.from({ length: counts[i]! }, (_, offset) => cpStart + offset),
