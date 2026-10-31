@@ -21,6 +21,9 @@ type EncodeOptions = {
   addBOM?: boolean;
 };
 
+/**
+ * Equivalent to DOM type {@link AllowSharedBufferSource}
+ */
 type BufferSource = ArrayBufferLike | ArrayBufferView;
 
 type Endianness = "big-endian" | "little-endian";
