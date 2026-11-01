@@ -45,6 +45,8 @@ import * as utf_16 from "./codecs/utf-16.js";
 import * as utf_16be from "./codecs/utf-16be.js";
 import * as utf_16le from "./codecs/utf-16le.js";
 import * as x_user_defined from "./codecs/x-user-defined.js";
+// Other encodings
+import * as iso_2022_jp_1 from "./codecs/iso-2022-jp-1.js";
 import type {
   DecodeOptions,
   Decoder,
@@ -98,6 +100,7 @@ type CanonicalEncoding = Extract<
   | "utf_16le"
   | "utf_16be"
   | "x_user_defined"
+  | "iso_2022_jp_1"
 >;
 
 type Codec<
@@ -337,4 +340,7 @@ export {
   utf_16le as ucs_2,
   utf_16le as unicodefeff,
   x_user_defined,
+
+  // Other encodings
+  iso_2022_jp_1,
 };
