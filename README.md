@@ -273,7 +273,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
       <td>
         <a href="https://en.wikipedia.org/wiki/Mac_OS_Cyrillic_encoding"
           >Mac OS Cyrillic</a
-        > (`x-mac-cyrillic`)
+        > (<code>x-mac-cyrillic</code>)
       </td>
       <td>x_mac_cyrillic</td>
     </tr>
