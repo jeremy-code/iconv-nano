@@ -52,6 +52,7 @@
     "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
     "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@commitlint/types": "^21.2.3",
     "@oxc-node/core": "^1.0.1",
     "@types/node": "^26.6.6",
@@ -70,7 +71,7 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "12.15.0",
+      "version": "12.16.1",
       "onFail": "download"
     },
     "runtime": {
