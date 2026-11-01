@@ -49,6 +49,9 @@ iconv.utf16.decode(Uint8Array.fromHex("3dd805de")); // "😅"
 
 iconv.shift_jis.encode("文字化け").toHex(); // "95b68e9a89bb82af"
 iconv.shift_jis.decode(Uint8Array.fromHex("95b68e9a89bb82af")); // "文字化け"
+
+iconv.gbk.encode("乱码").toHex(); // c2d2c2eb
+iconv.gbk.decode(Uint8Array.fromHex("c2d2c2eb")); // "乱码"
 ```
 
 The [namespace import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) is important for tree-shaking since it allows you to selectively choose which encodings to use while remaining statically analyzable.
