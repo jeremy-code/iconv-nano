@@ -104,7 +104,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
     </tr>
     <tr>
       <td><a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a></td>
-      <td>utf_8</td>
+      <td><code>utf_8</code></td>
     </tr>
     <tr>
       <td colspan="2">
@@ -115,159 +115,159 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
     </tr>
     <tr>
       <td><a href="https://en.wikipedia.org/wiki/Code_page_866">IBM-866</a></td>
-      <td>ibm866</td>
+      <td><code>ibm866</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-2">ISO-8859-2</a>
       </td>
-      <td>iso_8859_2</td>
+      <td><code>iso_8859_2</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-3">ISO-8859-3</a>
       </td>
-      <td>iso_8859_3</td>
+      <td><code>iso_8859_3</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-4">ISO-8859-4</a>
       </td>
-      <td>iso_8859_4</td>
+      <td><code>iso_8859_4</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-5">ISO-8859-5</a>
       </td>
-      <td>iso_8859_5</td>
+      <td><code>iso_8859_5</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-6">ISO-8859-6</a>
       </td>
-      <td>iso_8859_6</td>
+      <td><code>iso_8859_6</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-7">ISO-8859-7</a>
       </td>
-      <td>iso_8859_7</td>
+      <td><code>iso_8859_7</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-8">ISO-8859-8</a>
       </td>
-      <td>iso_8859_8</td>
+      <td><code>iso_8859_8</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO-8859-8-I">ISO-8859-8-I</a>
       </td>
-      <td>iso_8859_8_i</td>
+      <td><code>iso_8859_8i</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-10">ISO-8859-10</a>
       </td>
-      <td>iso_8859_10</td>
+      <td><code>iso_8859_10</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-13">ISO-8859-13</a>
       </td>
-      <td>iso_8859_13</td>
+      <td><code>iso_8859_13</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-14">ISO-8859-14</a>
       </td>
-      <td>iso_8859_14</td>
+      <td><code>iso_8859_14</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-15">ISO-8859-15</a>
       </td>
-      <td>iso_8859_15</td>
+      <td><code>iso_8859_15</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/ISO/IEC_8859-16">ISO-8859-16</a>
       </td>
-      <td>iso_8859_16</td>
+      <td><code>iso_8859_16</code></td>
     </tr>
     <tr>
       <td><a href="https://en.wikipedia.org/wiki/KOI8-R">KOI8-R</a></td>
-      <td>koi8_r</td>
+      <td><code>koi8_r</code></td>
     </tr>
     <tr>
       <td><a href="https://en.wikipedia.org/wiki/KOI8-U">KOI8-U</a></td>
-      <td>koi8_u</td>
+      <td><code>koi8_u</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Mac_OS_Roman">Mac OS Roman</a>
       </td>
-      <td>macintosh</td>
+      <td><code>macintosh</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-874">Windows-874</a>
       </td>
-      <td>windows_874</td>
+      <td><code>windows_874</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1250">Windows-1250</a>
       </td>
-      <td>windows_1250</td>
+      <td><code>windows_1250</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1251">Windows-1251</a>
       </td>
-      <td>windows_1251</td>
+      <td><code>windows_1251</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1252">Windows-1252</a>
       </td>
-      <td>windows_1252</td>
+      <td><code>windows_1252</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1253">Windows-1253</a>
       </td>
-      <td>windows_1253</td>
+      <td><code>windows_1253</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1254">Windows-1254</a>
       </td>
-      <td>windows_1254</td>
+      <td><code>windows_1254</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1255">Windows-1255</a>
       </td>
-      <td>windows_1255</td>
+      <td><code>windows_1255</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1256">Windows-1256</a>
       </td>
-      <td>windows_1256</td>
+      <td><code>windows_1256</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1257">Windows-1257</a>
       </td>
-      <td>windows_1257</td>
+      <td><code>windows_1257</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/Windows-1258">Windows-1258</a>
       </td>
-      <td>windows_1258</td>
+      <td><code>windows_1258</code></td>
     </tr>
     <tr>
       <td>
@@ -275,7 +275,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
           >Mac OS Cyrillic</a
         > (<code>x-mac-cyrillic</code>)
       </td>
-      <td>x_mac_cyrillic</td>
+      <td><code>x_mac_cyrillic</code></td>
     </tr>
     <tr>
       <td colspan="2">
@@ -289,11 +289,11 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
       <td>
         <a href="https://en.wikipedia.org/wiki/GBK_(character_encoding)">GBK</a>
       </td>
-      <td>GBK</td>
+      <td><code>gbk</code></td>
     </tr>
     <tr>
       <td><a href="https://en.wikipedia.org/wiki/GB_18030">GB 18030</a></td>
-      <td>gb18030</td>
+      <td><code>gb18030</code></td>
     </tr>
     <tr>
       <td colspan="2">
@@ -305,7 +305,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
     </tr>
     <tr>
       <td><a href="https://en.wikipedia.org/wiki/Big5">Big5</a></td>
-      <td>big5</td>
+      <td><code>big5</code></td>
     </tr>
     <tr>
       <td colspan="2">
@@ -321,7 +321,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
           >EUC-JP</a
         >
       </td>
-      <td>euc_jp</td>
+      <td><code>euc_jp</code></td>
     </tr>
     <tr>
       <td>
@@ -329,11 +329,11 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
           >ISO-2022-JP</a
         >
       </td>
-      <td>iso_2022_jp</td>
+      <td><code>iso_2022_jp</code></td>
     </tr>
     <tr>
       <td><a href="https://en.wikipedia.org/wiki/Shift_JIS">Shift JIS</a></td>
-      <td>shift_jis</td>
+      <td><code>shift_jis</code></td>
     </tr>
     <tr>
       <td colspan="2">
@@ -349,7 +349,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
           >EUC-KR</a
         >
       </td>
-      <td>euc_kr</td>
+      <td><code>euc_kr</code></td>
     </tr>
     <tr>
       <td colspan="2">
@@ -363,13 +363,13 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
       <td>
         <a href="https://en.wikipedia.org/wiki/UTF-16#UTF-16BE">UTF-16BE</a>
       </td>
-      <td>utf_16be</td>
+      <td><code>utf_16be</code></td>
     </tr>
     <tr>
       <td>
         <a href="https://en.wikipedia.org/wiki/UTF-16#UTF-16LE">UTF-16LE</a>
       </td>
-      <td>utf_16le</td>
+      <td><code>utf_16le</code></td>
     </tr>
     <tr>
       <td>
@@ -377,7 +377,7 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
           >x-user-defined</a
         >
       </td>
-      <td>x-user-defined</td>
+      <td><code>x_user_defined</code></td>
     </tr>
   </tbody>
 </table>
