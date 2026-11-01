@@ -24,7 +24,12 @@ pnpm add iconv-nano    # pnpm
 
 ## Features
 
-- Tree-shakable
+<!--
+For unpacked size: `curl -s "https://registry.npmjs.org/iconv-nano/latest" | jq ".dist.unpackedSize / 1024 | round"`
+For minified and gzipped size: `curl -s https://bundlephobia.com/api/size?package=iconv-nano | jq '.gzip / 1024 | round'`
+-->
+
+- Tree-shakable and tiny (277 KiB; 67 KiB gzipped and minified)
 - Isomorphic: uses `Uint8Array` and `TextEncoder`/`TextDecoder` APIs
 - Supports all WHATWG encodings
 
