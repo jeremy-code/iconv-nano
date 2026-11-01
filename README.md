@@ -401,7 +401,7 @@ Benchmarks comparing the performance of `iconv-nano` and `iconv-lite` can be fou
 
 This library relies on the [`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder) API for decoding. The [Encoding API](https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API) enjoys wide support in most JavaScript runtimes, being available since March 2017 in all major browsers[^1] and supported since Node.js v11.0.0,[^1] Deno v0.2.2,[^2] and Bun v0.1.0.[^3] If you look at the [web-platform-tests for encoding](https://wpt.fyi/results/encoding), browsers are in general spec-compliant with regard to their encoding implementations.
 
-I tested server runtimes' implementations of `TextDecoder` on the encoding-related tests in the [web-platform-tests](https://github.com/web-platform-tests/wpt) test suite. Deno (v2.9.7) passed all tests. Bun (v1.4.2) failed one test ([fatal stream: iso-2022-jp](https://github.com/web-platform-tests/wpt/blob/788584597a223265879760fd2633f7859d09e5ad/encoding/textdecoder-mistakes.any.js#L671-L688)), though not on a part of the API this library touches. As of Node.js v26.10.0, the following encodings seem to have some issues: ISO-2022-JP, Big5, EUC-JP, EUC-KR, Shift JIS. For those encodings, consider using a `TextDecoder` polyfill such as [@exodus/bytes](https://npmjs.com/@exodus/bytes).
+I tested server runtimes' implementations of `TextDecoder` on the encoding-related tests in the [web-platform-tests](https://github.com/web-platform-tests/wpt) test suite. Deno (v2.9.7) passed all tests. Bun (v1.4.2) failed one test ([fatal stream: iso-2022-jp](https://github.com/web-platform-tests/wpt/blob/788584597a223265879760fd2633f7859d09e5ad/encoding/textdecoder-mistakes.any.js#L671-L688)), though not on a part of the API this library touches. As of Node.js v26.10.0, the following encodings seem to have some issues: ISO-2022-JP, Big5, EUC-JP, EUC-KR, and Shift JIS. Furthermore, the encoding `"iso-8859-16"` is not supported.[^4] For those encodings, consider using a `TextDecoder` polyfill such as [@exodus/bytes](https://npmjs.com/@exodus/bytes).
 
 For a detailed table of encoding API support across runtimes, please review this [spreadsheet](https://docs.google.com/spreadsheets/d/1pdEefRG6r9fZy61WHGz0TKSt8cO4ISWqlpBN5KntIvQ/edit) by [ChALkeR](https://github.com/ChALkeR), creator of [@exodus/bytes](https://npmjs.com/@exodus/bytes).
 
@@ -418,3 +418,5 @@ This project is licensed under the BSD-2 Clause license. See the [LICENSE](LICEN
 [^2]: https://github.com/denoland/deno/blob/main/Releases.md#v022--20181207
 
 [^3]: https://github.com/oven-sh/bun/commit/43de33afc7fcc4cab25f578566e225ba9e4d4258
+
+[^4]: https://nodejs.org/api/util.html#whatwg-supported-encodings
