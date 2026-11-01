@@ -88,6 +88,9 @@ const getBytes = (
 All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.whatwg.org) are supported. Their aliases have also been exported.
 
 <table>
+  <caption>
+    Supported encodings in <code>iconv-nano</code>
+  </caption>
   <thead>
     <tr>
       <th>Name</th>
