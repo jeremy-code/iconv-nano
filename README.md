@@ -93,7 +93,7 @@ const getBytes = (
 
 ## Supported encodings
 
-All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.whatwg.org) are supported. Their aliases have also been exported.
+All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.whatwg.org) are supported. Their [aliases](https://encoding.spec.whatwg.org/#names-and-labels) have also been exported.
 
 <table>
   <caption>
