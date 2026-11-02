@@ -31,12 +31,8 @@ const serializeEncodingData = (
   const isParsed = !Array.isArray(data);
   if (isParsed) {
     return {
-      fileName: `${encoding}.ts`,
-      source:
-        `/* oxlint-disable */\n\n` +
-        `import type { VlqRunsPayload } from "../src/utils/vlqRuns.js";\n\n` +
-        `export const PAYLOAD =\n` +
-        `  ${JSON.stringify(encodeVlqRunsPayload(data))} as VlqRunsPayload;\n`,
+      fileName: `${encoding}.txt`,
+      source: encodeVlqRunsPayload(data),
     };
   }
   return { fileName: `${encoding}.json`, source: JSON.stringify(data) };

@@ -1,5 +1,5 @@
 import gb18030_ranges from "../../encodings/gb18030-ranges.json" with { type: "json" };
-import { PAYLOAD } from "../../encodings/gb18030.js";
+import PAYLOAD from "../../encodings/gb18030.txt";
 import type { Encoder, Decoder, EncodeOptions } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";

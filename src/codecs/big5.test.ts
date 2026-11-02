@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PAYLOAD } from "../../encodings/big5.js";
+import PAYLOAD from "../../encodings/big5.txt";
 import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as big5 from "./big5.js";
 

@@ -1,4 +1,4 @@
-import { PAYLOAD } from "../../encodings/big5.js";
+import PAYLOAD from "../../encodings/big5.txt";
 import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
