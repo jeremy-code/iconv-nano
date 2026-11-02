@@ -1,16 +1,16 @@
 import type { Endianness, BufferSource } from "../interfaces.js";
 
 const detectEndianness = (input: BufferSource): Endianness | undefined => {
+  if (input.byteLength < 2) {
+    return undefined;
+  }
+
   const bytes =
     input instanceof Uint8Array
       ? input
       : ArrayBuffer.isView(input)
         ? new Uint8Array(input.buffer, input.byteOffset, input.byteLength)
         : new Uint8Array(input);
-
-  if (bytes.length < 2) {
-    return undefined;
-  }
 
   if (bytes[0] === 0xff && bytes[1] === 0xfe) {
     return "little-endian";
