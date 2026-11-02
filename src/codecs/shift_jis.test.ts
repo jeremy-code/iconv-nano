@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PAYLOAD } from "../../encodings/jis0208.js";
+import PAYLOAD from "../../encodings/jis0208.txt";
 import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as shift_jis from "./shift_jis.js";
 

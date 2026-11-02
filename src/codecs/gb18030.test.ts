@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PAYLOAD } from "../../encodings/gb18030.js";
+import PAYLOAD from "../../encodings/gb18030.txt";
 import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as gb18030 from "./gb18030.js";
 

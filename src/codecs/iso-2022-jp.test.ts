@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import iso_2022_jp_katakana from "../../encodings/iso-2022-jp-katakana.json" with { type: "json" };
-import { PAYLOAD } from "../../encodings/jis0208.js";
+import PAYLOAD from "../../encodings/jis0208.txt";
 import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as iso_2022_jp from "./iso-2022-jp.js";
 

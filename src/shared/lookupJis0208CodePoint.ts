@@ -1,4 +1,4 @@
-import { PAYLOAD } from "../../encodings/jis0208.js";
+import PAYLOAD from "../../encodings/jis0208.txt";
 import { decodeVlqRunsLookup, type VlqRunsLookup } from "../utils/vlqRuns.js";
 
 // Code point -> pointer lookup over columnar runs of the JIS0208 reverse index,

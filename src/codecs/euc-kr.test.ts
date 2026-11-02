@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PAYLOAD } from "../../encodings/euc-kr.js";
+import PAYLOAD from "../../encodings/euc-kr.txt";
 import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as euc_kr from "./euc-kr.js";
 
