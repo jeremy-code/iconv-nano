@@ -31,7 +31,7 @@ describe("UTF-32", () => {
             endianness: "big-endian",
             addBOM: false,
           }),
-        ).toEqual(Uint8Array.fromHex("00000041"));
+        ).toEqual(new Uint8Array([0x00, 0x00, 0x00, 0x41]));
       });
       it("returns only BOM when encoding empty string when true", () => {
         expect(utf_32.encode("", { addBOM: true })).toEqual(
@@ -42,24 +42,26 @@ describe("UTF-32", () => {
         ).toEqual(new Uint8Array([0x00, 0x00, 0xfe, 0xff]));
       });
       it("does not add a BOM by default", () => {
-        expect(utf_32.encode("A")).toEqual(Uint8Array.fromHex("41000000"));
+        expect(utf_32.encode("A")).toEqual(
+          new Uint8Array([0x41, 0x00, 0x00, 0x00]),
+        );
       });
     });
 
     describe("endianness", () => {
-      it("encodes characters as little-endian by default", () => {
+      it("encodes little-endian by default", () => {
         expect(utf_32.encode("Aé")).toEqual(
           Uint8Array.fromHex("41000000e9000000"),
         );
       });
-      it("encodes little-endian UTF-32", () => {
+      it("encodes little-endian", () => {
         expect(
           utf_32.encode("ABC", {
             endianness: "little-endian",
           }),
         ).toEqual(Uint8Array.fromHex("410000004200000043000000"));
       });
-      it("encodes big-endian UTF-32", () => {
+      it("encodes big-endian", () => {
         expect(
           utf_32.encode("ABC", {
             endianness: "big-endian",
@@ -72,11 +74,9 @@ describe("UTF-32", () => {
     });
 
     it("encodes surrogate pairs", () => {
-      // python3 -c 'print("😀".encode("utf-32le").hex())'
       expect(utf_32.encode("😀", { endianness: "little-endian" })).toEqual(
         new Uint8Array([0x00, 0xf6, 0x01, 0x00]),
       );
-      // python3 -c 'print("😀".encode("utf-32be").hex())'
       expect(utf_32.encode("😀", { endianness: "big-endian" })).toEqual(
         new Uint8Array([0x00, 0x01, 0xf6, 0x00]),
       );
@@ -106,7 +106,7 @@ describe("UTF-32", () => {
       it("strips the BOM by default", () => {
         expect(utf_32.decode(Uint8Array.fromHex("fffe000041000000"))).toBe("A");
       });
-      it("strips BOM in first character when true", () => {
+      it("strips the BOM when true", () => {
         expect(
           utf_32.decode(Uint8Array.fromHex("fffe000041000000"), {
             endianness: "little-endian",
@@ -120,7 +120,7 @@ describe("UTF-32", () => {
           }),
         ).toBe("A");
       });
-      it("does not strip BOM in first character when false", () => {
+      it("does not strip BOM when false", () => {
         expect(
           utf_32.decode(Uint8Array.fromHex("fffe000041000000"), {
             endianness: "little-endian",
@@ -134,7 +134,7 @@ describe("UTF-32", () => {
           }),
         ).toBe("\ufeffA");
       });
-      it("only strips BOM in first character", () => {
+      it("only strips BOM in first character when true", () => {
         expect(
           utf_32.decode(Uint8Array.fromHex("fffe0000fffe0000"), {
             endianness: "little-endian",
@@ -150,12 +150,12 @@ describe("UTF-32", () => {
       });
     });
     describe("endianness", () => {
-      it("decodes little-endian input by default", () => {
+      it("decodes little-endian by default", () => {
         expect(utf_32.decode(Uint8Array.fromHex("41000000e9000000"))).toBe(
           "Aé",
         );
       });
-      it("decodes big-endian input", () => {
+      it("decodes big-endian", () => {
         expect(
           utf_32.decode(Uint8Array.fromHex("00000041000000e9"), {
             endianness: "big-endian",
@@ -173,26 +173,30 @@ describe("UTF-32", () => {
                 endianness,
                 addBOM: true,
               }),
-              {
-                detectEndianness: true,
-              },
+              { detectEndianness: true },
             ),
           ).toBe("Hello world!🌍😀🚀"),
         );
       });
       it("does not detect endianness when false", () => {
-        expect(
-          utf_32.decode(
-            utf_32.encode("Hello world!🌍😀🚀", {
-              endianness: "big-endian",
-              addBOM: true,
-            }),
-            { detectEndianness: false },
-          ),
-        ).toBe("����������������");
+        expect.hasAssertions();
+        (["little-endian", "big-endian"] as const).forEach((endianness) =>
+          expect(
+            utf_32.decode(
+              utf_32.encode("Hello world!🌍😀🚀", {
+                endianness,
+                addBOM: true,
+              }),
+              {
+                detectEndianness: true,
+                endianness:
+                  endianness === "big-endian" ? "little-endian" : "big-endian",
+              },
+            ),
+          ).toBe("Hello world!🌍😀🚀"),
+        );
       });
-
-      it("uses detected endianness instead of the configured endianness", () => {
+      it("uses detected endianness instead of configured endianness", () => {
         expect(
           utf_32.decode(Uint8Array.fromHex("0000feff00000041"), {
             detectEndianness: true,
@@ -204,7 +208,7 @@ describe("UTF-32", () => {
     it("returns empty string for empty Uint8Array", () => {
       expect(utf_32.decode(new Uint8Array())).toBe("");
     });
-    it("replaces code points outside the Unicode range", () => {
+    it("replaces code points outside the Unicode range (>0x10ffff)", () => {
       expect(
         utf_32.decode(Uint8Array.fromHex("00001100ffffffff41000000")),
       ).toBe("��A");
@@ -219,12 +223,11 @@ describe("UTF-32", () => {
         ),
       ).toBe("A\ufffd");
     });
-    it("correctly decodes supplementary Unicode characters", () => {
+    it("decodes surrogates pairs", () => {
       expect(
         utf_32.decode(Uint8Array.fromHex("4100000000f6010042000000")),
       ).toBe("A😀B");
     });
-
     it("handles lone surrogates", () => {
       expect(
         utf_32.decode(Uint8Array.fromHex("0000d83d"), {
