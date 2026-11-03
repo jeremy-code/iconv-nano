@@ -11,6 +11,7 @@ Some modifications were made to the original file based on the [WHATWG encoding 
 - Single-byte encodings ([`ibm866.json`](./ibm866.json), `iso-8859-*.json`, `koi8-*.json`, `windows-*.json`, [`x-mac-cyrillic.json`](./x-mac-cyrillic.json)) were preserved as-is, except that holes were replaced with -1.
 - [iso-2022-jp-katakana.json](./iso-2022-jp-katakana.json) was preserved as-is.
 - Additionally, some encodings are stored as a VLQ-encoded run-length payload (see `encodeVlqRunsPayload` in [`scripts/utils/vlqRuns.ts`](../scripts/utils/vlqRuns.ts), decoded at runtime by [`src/utils/vlqRuns.ts`](../src/utils/vlqRuns.ts)) to optimize performance and size. Currently applied to: [`big5.ts`](./big5.ts), [`euc-kr.ts`](./euc-kr.ts), [`gb18030.ts`](./gb18030.ts), [`jis0208.ts`](./jis0208.ts), [`jis0212.ts`](./jis0212.ts).
+- [`jis0212.ts`](./jis0212.ts) exists but is unused, because it is only necessary for the decoder implementation. It is not bundled in the final build.
 
 JSON encoding indices are imported by `iconv-nano` in the development code but are compiled into minified JavaScript files during build time.
 
