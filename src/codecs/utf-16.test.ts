@@ -72,6 +72,23 @@ describe("UTF-16", () => {
         );
       });
     });
+
+    // Lone surrogates should be silently replaced with Unicode replacement
+    // character to match TextEncoder implementation
+    //
+    // new TextEncoder().encode("\ud83d") // Uint8Array([0xef, 0xbf, 0xbd]])
+    it("handles lone surrogates", () => {
+      expect(
+        utf_16.encode("\ud83d", {
+          endianness: "big-endian",
+        }),
+      ).toEqual(new Uint8Array([0xff, 0xfd]));
+      expect(
+        utf_16.encode("\ud83d", {
+          endianness: "little-endian",
+        }),
+      ).toEqual(new Uint8Array([0xfd, 0xff]));
+    });
   });
 
   describe("decode", () => {

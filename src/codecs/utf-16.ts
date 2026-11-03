@@ -9,6 +9,7 @@ import { detectEndianness } from "../utils/detectEndianness.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 
 const BYTE_ORDER_MARK = 0xfeff; // BOM in UTF-16
+const REPLACEMENT_CHARACTER = 0xfffd;
 
 const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
   input,
@@ -31,11 +32,28 @@ const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
     byteOffset += 2;
   }
 
-  for (let index = 0; index < input.length; index++) {
-    // Using charCodeAt here instead of codePointAt is intentional
-    const charCode = input.charCodeAt(index);
-    dataView.setUint16(byteOffset, charCode, isLittleEndian);
-    byteOffset += 2;
+  for (let i = 0; i < input.length; i++) {
+    const codePoint = input.codePointAt(i)!;
+    if (codePoint > 0xffff) {
+      i++;
+    }
+
+    if (0xd800 <= codePoint && codePoint <= 0xdfff) {
+      // Lone surrogate
+      dataView.setUint16(byteOffset, REPLACEMENT_CHARACTER, isLittleEndian);
+      byteOffset += 2;
+    } else if (0x10000 <= codePoint && codePoint <= 0x10ffff) {
+      // https://en.wikipedia.org/wiki/UTF-16#Code_points_from_U+010000_to_U+10FFFF
+      const highSurrogate = ((codePoint - 0x10000) >> 10) + 0xd800;
+      const lowSurrogate = ((codePoint - 0x10000) & 0x3ff) + 0xdc00;
+
+      dataView.setUint16(byteOffset, highSurrogate, isLittleEndian);
+      dataView.setUint16(byteOffset + 2, lowSurrogate, isLittleEndian);
+      byteOffset += 4;
+    } else {
+      dataView.setUint16(byteOffset, codePoint, isLittleEndian);
+      byteOffset += 2;
+    }
   }
 
   return data;
