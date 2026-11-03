@@ -393,6 +393,10 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
   </tbody>
 </table>
 
+The following encodings are also supported:
+
+- [UTF-32](https://en.wikipedia.org/wiki/UTF-32) - `utf_32`, `utf_32be`, `utf_32le`
+
 ## Performance
 
 Benchmarks comparing the performance of `iconv-nano` and `iconv-lite` can be found at the following GitHub repository: [jeremy-code/encoding-benchmarks](https://github.com/jeremy-code/encoding-benchmarks). Broadly, `iconv-nano` is either on-par or faster with `iconv-lite` when encoding, and usually faster than it when decoding. This becomes especially true when comparing performance in the browser where the Node.js Buffer API has been polyfilled for `iconv-lite`'s use.
