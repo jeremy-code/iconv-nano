@@ -60,19 +60,26 @@ const decode: Decoder<
         ? new DataView(input.buffer, input.byteOffset, input.byteLength)
         : new DataView(input);
   const isLittleEndian = endianness === "little-endian";
+  const codePointsLength = dataView.byteLength - (dataView.byteLength % 4);
 
   // https://jsbm.dev/OhV0sPKP2R441
   let output = "";
-  for (let i = 0; i < dataView.byteLength; i += 4) {
+  for (let i = 0; i < codePointsLength; i += 4) {
     const codePoint = dataView.getUint32(i, isLittleEndian);
-    if (codePoint > MAX_CODE_POINT) {
-      output += "�";
+    if (
+      (0xd800 <= codePoint && codePoint <= 0xdfff) /* lone surrogate */ ||
+      MAX_CODE_POINT < codePoint
+    ) {
+      output += "\ufffd";
       continue;
     }
     if (stripBOM && i === 0 && codePoint === BYTE_ORDER_MARK) {
       continue;
     }
     output += String.fromCodePoint(codePoint);
+  }
+  if (codePointsLength !== dataView.byteLength) {
+    output += "\ufffd";
   }
   return output;
 };

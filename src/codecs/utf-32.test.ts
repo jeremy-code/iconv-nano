@@ -209,10 +209,15 @@ describe("UTF-32", () => {
         utf_32.decode(Uint8Array.fromHex("00001100ffffffff41000000")),
       ).toBe("��A");
     });
-    it("throws when the input length is not a multiple of four", () => {
-      expect(() => utf_32.decode(new Uint8Array([0x41, 0x00, 0x00]))).toThrow(
-        RangeError,
-      );
+    it("handles input when length is not a multiple of four", () => {
+      // new TextDecoder("utf-16le").decode(new Uint8Array([0])) // "�"
+      expect(utf_32.decode(new Uint8Array([0x41, 0x00, 0x00]))).toBe("\ufffd");
+      // new TextDecoder("utf-16le").decode(new Uint8Array([0x41,0,0])) // "A�"
+      expect(
+        utf_32.decode(
+          new Uint8Array([0x41, 0x00, 0x00, 0x00, 0x41, 0x00, 0x00]),
+        ),
+      ).toBe("A\ufffd");
     });
     it("correctly decodes supplementary Unicode characters", () => {
       expect(
@@ -220,30 +225,29 @@ describe("UTF-32", () => {
       ).toBe("A😀B");
     });
 
-    it("does not handle lone surrogates", () => {
+    it("handles lone surrogates", () => {
       expect(
         utf_32.decode(Uint8Array.fromHex("0000d83d"), {
           endianness: "big-endian",
         }),
-      ).toBe("\ud83d");
+      ).toBe("\ufffd");
       expect(
         utf_32.decode(Uint8Array.fromHex("3dd80000"), {
           endianness: "little-endian",
         }),
-      ).toBe("\ud83d");
-    });
-
-    it.fails("handles lone surrogates", () => {
+      ).toBe("\ufffd");
+      // d800dc00 is 𐀀 in UTF-16BE
       expect(
-        utf_32.decode(Uint8Array.fromHex("0000d83d"), {
+        utf_32.decode(Uint8Array.fromHex("0000d8000000dc00"), {
           endianness: "big-endian",
         }),
-      ).toBe("�");
+      ).toBe("\ufffd\ufffd");
+      // 00d800dc is 𐀀 in UTF-16LE
       expect(
-        utf_32.decode(Uint8Array.fromHex("3dd80000"), {
+        utf_32.decode(Uint8Array.fromHex("00d8000000dc0000"), {
           endianness: "little-endian",
         }),
-      ).toBe("�");
+      ).toBe("\ufffd\ufffd");
     });
 
     it("respects input's byteOffset and byteLength", () => {
