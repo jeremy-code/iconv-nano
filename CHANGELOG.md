@@ -1,5 +1,19 @@
 # iconv-nano
 
+## 0.0.21
+
+### Patch Changes
+
+- [`63bd33b`](https://github.com/jeremy-code/iconv-nano/commit/63bd33b3d4ea6a40deb27d771aa847eb07b45c12) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: handle lone surrogates in UTF-16 encoding
+
+  - Previously, lone surrogates were encoded as bytes in the output. To match
+    TextEncoder implementation, lone surrogates are now replaced with Unicode
+    replacement character
+
+- [#41](https://github.com/jeremy-code/iconv-nano/pull/41) [`2aee7dd`](https://github.com/jeremy-code/iconv-nano/commit/2aee7dddcd6a2b4044f13ca8e73649d8e3bd5923) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add UTF-32 encoding support
+
+- [`0ec76f8`](https://github.com/jeremy-code/iconv-nano/commit/0ec76f86340a412637aca1525af6bb9f714c893f) Thanks [@jeremy-code](https://github.com/jeremy-code)! - refactor: replace hardcoded escape sequences with constants in ISO-2022-JP encoder
+
 ## 0.0.20
 
 ### Patch Changes
