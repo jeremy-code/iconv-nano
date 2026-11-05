@@ -88,6 +88,19 @@ describe("UTF-32", () => {
       );
     });
 
+    it("handles lone surrogates", () => {
+      expect(
+        utf_32.encode("\ud83d", {
+          endianness: "big-endian",
+        }),
+      ).toEqual(new Uint8Array([0x00, 0x00, 0xff, 0xfd]));
+      expect(
+        utf_32.encode("\ud83d", {
+          endianness: "little-endian",
+        }),
+      ).toEqual(new Uint8Array([0xfd, 0xff, 0x00, 0x00]));
+    });
+
     it("returns empty Uint8Array for empty string", () => {
       expect(utf_32.encode("")).toHaveLength(0);
     });

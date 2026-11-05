@@ -9,6 +9,7 @@ import { detectEndianness } from "../utils/detectEndianness.js";
 
 const BYTE_ORDER_MARK = 0xfeff; // BOM
 const MAX_CODE_POINT = 0x10ffff;
+const REPLACEMENT_CHARACTER = 0xfffd;
 
 const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
   input,
@@ -32,8 +33,15 @@ const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
     if (codePoint > 0xffff) {
       i++;
     }
-    dataView.setUint32(byteOffset, codePoint, isLittleEndian);
-    byteOffset += 4;
+
+    if (0xd800 <= codePoint && codePoint <= 0xdfff) {
+      // Lone surrogate
+      dataView.setUint32(byteOffset, REPLACEMENT_CHARACTER, isLittleEndian);
+      byteOffset += 4;
+    } else {
+      dataView.setUint32(byteOffset, codePoint, isLittleEndian);
+      byteOffset += 4;
+    }
   }
 
   return buf.byteLength !== byteOffset ? buf.slice(0, byteOffset) : buf;
