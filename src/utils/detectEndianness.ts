@@ -2,8 +2,15 @@ import type { Endianness, BufferSource } from "../interfaces.js";
 
 const BYTE_ORDER_MARK = 0xfeff;
 
-const detectEndianness = (input: BufferSource): Endianness | undefined => {
-  if (input.byteLength < 2) {
+/**
+ * @param bytesPerElement - Number of bytes per element (e.g. UTF-16 = 2, UTF-32
+ *                          = 4)
+ */
+const detectEndianness = (
+  input: BufferSource,
+  bytesPerElement = 2,
+): Endianness | undefined => {
+  if (input.byteLength < bytesPerElement) {
     return undefined;
   }
 
@@ -14,15 +21,29 @@ const detectEndianness = (input: BufferSource): Endianness | undefined => {
         ? new Uint8Array(input.buffer, input.byteOffset, input.byteLength)
         : new Uint8Array(input);
 
+  // Little-endian BOM: FF FE [00 ...]
   if (
     bytes[0] === (BYTE_ORDER_MARK & 0xff) &&
     bytes[1] === ((BYTE_ORDER_MARK >> 8) & 0xff)
   ) {
+    for (let index = 2; index < bytesPerElement; index++) {
+      if (bytes[index] !== 0) {
+        return undefined;
+      }
+    }
     return "little-endian";
-  } else if (
-    bytes[0] === ((BYTE_ORDER_MARK >> 8) & 0xff) &&
-    bytes[1] === (BYTE_ORDER_MARK & 0xff)
+  }
+
+  // Big-endian BOM: [00 ...] FE FF
+  if (
+    bytes[bytesPerElement - 2] === ((BYTE_ORDER_MARK >> 8) & 0xff) &&
+    bytes[bytesPerElement - 1] === (BYTE_ORDER_MARK & 0xff)
   ) {
+    for (let index = 0; index < bytesPerElement - 2; index++) {
+      if (bytes[index] !== 0) {
+        return undefined;
+      }
+    }
     return "big-endian";
   }
 
