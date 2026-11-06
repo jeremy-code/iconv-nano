@@ -1,5 +1,15 @@
 # iconv-nano
 
+## 0.0.22
+
+### Patch Changes
+
+- [`a591446`](https://github.com/jeremy-code/iconv-nano/commit/a591446416b5ba145682b38361970d8ce16c3b19) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: remove iso_8859_11 from CanonicalEncoding type
+
+- [`c061fc2`](https://github.com/jeremy-code/iconv-nano/commit/c061fc26b67865a4d8d5436d2890dee36d6e7f8a) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: adjust buffer size in encode function based on isGBK option
+
+  - If isGBK is set, the buffer size is reduced to length * 2 instead of length * 4
+
 ## 0.0.21
 
 ### Patch Changes
