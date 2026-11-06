@@ -122,16 +122,18 @@ type VlqRunsTable = {
   table: Uint16Array<ArrayBuffer>;
 };
 
+const MAX_CODE_POINT = 0x10ffff;
 // Blocks cover the full Unicode code point range: some indexes (big5) map astral code points
 // See https://encoding.spec.whatwg.org/#index-big5-pointer
-const BLOCK_COUNT = (0x10ffff >> 8) + 1; // 4352
+const BLOCK_COUNT = (MAX_CODE_POINT >> 8) + 1; // 4352
 const BLOCK_SIZE = 256;
 // At most BLOCK_COUNT (4352) blocks exist, so 0xffff is never a block id
 const NO_BLOCK = 0xffff;
+// WHATWG index pointers stay below 0xffff, so it doubles as the unmapped sentinel
+const UNMAPPED = 0xffff;
 
 // Builds an ICU-style two-stage table:
 // O(1) lookups costing ~0.1 ms of build time and 512 B per used 256-code-point block.
-// WHATWG index pointers stay below 0xffff, so it doubles as the unmapped sentinel.
 const buildVlqRunsTable = (runs: VlqRuns): VlqRunsTable => {
   const { cpStarts, ptrStarts, counts } = runs;
   const present = new Uint8Array(BLOCK_COUNT);
@@ -146,10 +148,11 @@ const buildVlqRunsTable = (runs: VlqRuns): VlqRunsTable => {
   let usedBlocks = 0;
   for (let block = 0; block < BLOCK_COUNT; block++) {
     if (present[block] === 1) {
-      blockIds[block] = usedBlocks++;
+      blockIds[block] = usedBlocks;
+      usedBlocks++;
     }
   }
-  const table = new Uint16Array(usedBlocks * BLOCK_SIZE).fill(0xffff);
+  const table = new Uint16Array(usedBlocks * BLOCK_SIZE).fill(UNMAPPED);
   for (let i = 0; i < cpStarts.length; i++) {
     const cpStart = cpStarts[i]!;
     const pointerStart = ptrStarts[i]!;
@@ -177,7 +180,7 @@ const decodeVlqRunsLookup = /* @__NO_SIDE_EFFECTS__ */ (
 ): VlqRunsLookup => {
   const { blockIds, table } = buildVlqRunsTable(decodeVlqRuns(payload));
   return (codePoint) => {
-    if (codePoint < 0 || codePoint > 0x10ffff) {
+    if (codePoint < 0 || codePoint > MAX_CODE_POINT) {
       return -1;
     }
     const block = blockIds[codePoint >> 8]!;
@@ -185,7 +188,7 @@ const decodeVlqRunsLookup = /* @__NO_SIDE_EFFECTS__ */ (
       return -1;
     }
     const pointer = table[(block << 8) | (codePoint & 0xff)]!;
-    return pointer === 0xffff ? -1 : pointer;
+    return pointer === UNMAPPED ? -1 : pointer;
   };
 };
 
