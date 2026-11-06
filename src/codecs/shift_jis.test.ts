@@ -1,33 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { assert, describe, expect, it } from "vitest";
 
 import { PAYLOAD } from "../../encodings/jis0208.js";
+import { lookupJis0208CodePoint } from "../shared/lookupJis0208CodePoint.js";
 import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as shift_jis from "./shift_jis.js";
 
 const jis0208UniqueCodepoints = Array.from(
-  new TextDecoder("iso-2022-jp").decode(
-    new Uint8Array([
-      0x1b, // jis0208 escape sequence
-      0x24,
-      0x42,
-      // Pointers in range 8272 to 8835, inclusive
-      ...Array.from({ length: 0x2283 - 0x2050 }, (_, i) => i + 0x2050).flatMap(
-        (pointer) => [(pointer >> 8) & 0xff, pointer & 0xff], // Big endian
-      ),
-      0x1b, // ascii escape sequence
-      0x28,
-      0x42,
-    ]),
-  ),
-  (char) => char.codePointAt(0),
-).flatMap((codePoint) =>
-  codePoint !== undefined &&
-  codePoint !== 0xfffd /* unicode replacement character */
-    ? [codePoint]
-    : [],
+  "纊褜鍈銈蓜俉炻昱棈鋹曻彅丨仡仼伀伃伹佖侒侊侚侔俍偀倢俿倞偆偰偂傔僴僘兊兤冝冾凬刕劜劦勀勛匀匇匤卲厓厲叝﨎咜咊咩哿喆坙坥垬埈埇﨏塚增墲夋奓奛奝奣妤妺孖寀甯寘寬尞岦岺峵崧嵓﨑嵂嵭嶸嶹巐弡弴彧德忞恝悅悊惞惕愠惲愑愷愰憘戓抦揵摠撝擎敎昀昕昻昉昮昞昤晥晗晙晴晳暙暠暲暿曺朎朗杦枻桒柀栁桄棏﨓楨﨔榘槢樰橫橆橳橾櫢櫤毖氿汜沆汯泚洄涇浯涖涬淏淸淲淼渹湜渧渼溿澈澵濵瀅瀇瀨炅炫焏焄煜煆煇凞燁燾犱犾猤猪獷玽珉珖珣珒琇珵琦琪琩琮瑢璉璟甁畯皂皜皞皛皦益睆劯砡硎硤硺礰礼神祥禔福禛竑竧靖竫箞精絈絜綷綠緖繒罇羡羽茁荢荿菇菶葈蒴蕓蕙蕫﨟薰蘒﨡蠇裵訒訷詹誧誾諟諸諶譓譿賰賴贒赶﨣軏﨤逸遧郞都鄕鄧釚釗釞釭釮釤釥鈆鈐鈊鈺鉀鈼鉎鉙鉑鈹鉧銧鉷鉸鋧鋗鋙鋐﨧鋕鋠鋓錥錡鋻﨨錞鋿錝錂鍰鍗鎤鏆鏞鏸鐱鑅鑈閒隆﨩隝隯霳霻靃靍靏靑靕顗顥飯飼餧館馞驎髙髜魵魲鮏鮱鮻鰀鵰鵫鶴鸙黑ⅰⅱⅲⅳⅴⅵⅶⅷⅸⅹ￤＇＂",
+  (val) => val.codePointAt(0)!,
 );
 
-// Every character covered by the Shift_JIS index, rebuilt from columnar runs
+jis0208UniqueCodepoints
+  .map(lookupJis0208CodePoint)
+  .forEach((jis0208Pointer) => {
+    assert(0x2050 <= jis0208Pointer && jis0208Pointer <= 0x2283);
+  });
+
+// Every character covered by the Shift JIS index, rebuilt from columnar runs
 const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
 const shift_jis_index = Array.from(cpStarts)
   .map((cpStart, i) =>
@@ -37,7 +26,7 @@ const shift_jis_index = Array.from(cpStarts)
   )
   .join("");
 
-describe("Shift_JIS", () => {
+describe("Shift JIS", () => {
   describe("encode", () => {
     it("correctly encodes sample inputs", () => {
       // python3 -c 'print("月が綺麗ですね。".encode("shift_jis").hex())'
@@ -139,9 +128,7 @@ describe("Shift_JIS", () => {
         ),
       }),
     )("%s", ([, input]) => {
-      const encodedInput = shift_jis.encode(input);
-
-      expect(shift_jis.decode(encodedInput)).toBe(input);
+      expect(shift_jis.decode(shift_jis.encode(input))).toBe(input);
     });
   });
 });
