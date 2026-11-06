@@ -9,9 +9,14 @@ import { decodeVlqRunsLookup } from "../utils/vlqRuns.js";
 // decoded once on module load (see `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`)
 const lookupGb18030CodePoint = decodeVlqRunsLookup(PAYLOAD);
 
-// -1 if not a code point with a value in the compatibility table. Using
-// switch/case instead of sparse hash map due to performance
-// (https://github.com/jeremy-code/iconv-nano/issues/27)
+/**
+ * Given a code point in the Unicode PUA, return the corresponding GB 18030
+ * pointer as a big-endian number; otherwise, return -1. This uses switch/case
+ * instead of sparse hash map due to performance.
+ *
+ * @see {@link https://github.com/jeremy-code/iconv-nano/issues/27}
+ * @see {@link https://www.unicode.org/L2/L2022/22274-disruptive-changes.pdf#page=5}
+ */
 const getGb18030CompatBytes = (codePoint: number): number => {
   switch (codePoint) {
     case 0xe78d:
@@ -55,7 +60,13 @@ const getGb18030CompatBytes = (codePoint: number): number => {
   }
 };
 
-// https://encoding.spec.whatwg.org/#indexes
+/**
+ * {@link gb18030_ranges} is a flat, sorted array of [pointerOffset, offset]
+ * where the codePointOffset corresponds to the maximum code point in that
+ * range. Use binary search to get the corresponding pointer
+ *
+ * @see {@link https://encoding.spec.whatwg.org/#index-gb18030-ranges-pointer}
+ */
 const getGb18030RangesPointer = (codePoint: number) => {
   if (codePoint === 0xe7c7) {
     return 7457;
@@ -63,13 +74,13 @@ const getGb18030RangesPointer = (codePoint: number) => {
 
   let rangeIndex = -1;
   let left = 0;
-  let right = (gb18030_ranges.length >> 1) - 1;
+  let right = Math.floor(gb18030_ranges.length / 2) - 1;
 
   while (left <= right) {
-    const mid = (left + right) >> 1;
+    const mid = Math.floor((left + right) / 2);
+    const codePointOffset = gb18030_ranges[mid * 2 + 1]!;
 
-    // Code point offset of range `mid` is at the odd index
-    if (gb18030_ranges[mid * 2 + 1]! <= codePoint) {
+    if (codePointOffset <= codePoint) {
       rangeIndex = mid;
       left = mid + 1;
     } else {
