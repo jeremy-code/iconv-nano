@@ -104,8 +104,8 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
   encodeOptions,
 ) => {
   const length = input.length;
-  const buf = new Uint8Array(length * 4);
   let isGBK = encodeOptions?.isGBK ?? false;
+  const buf = new Uint8Array(isGBK ? length * 2 : length * 4);
   let byteOffset = 0;
 
   for (let i = 0; i < length; i++) {
@@ -146,7 +146,7 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
 
       if (isGBK) {
         buf[byteOffset] = 0x3f;
-        byteOffset += 1;
+        byteOffset++;
         continue;
       }
 
