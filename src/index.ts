@@ -71,7 +71,6 @@ type CanonicalEncoding = Extract<
   | "iso_8859_8_i"
   | "iso_8859_8"
   | "iso_8859_10"
-  | "iso_8859_11"
   | "iso_8859_12"
   | "iso_8859_13"
   | "iso_8859_14"
