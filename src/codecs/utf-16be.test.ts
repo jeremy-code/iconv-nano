@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import * as utf_16be from "./utf-16be.js";
 
-describe("UTF-16", () => {
+describe("UTF-16 (big-endian)", () => {
   describe("encode", () => {
     it("correctly encodes sample inputs", () => {
       // python3 -c 'print("يولد جميع البشر أحرارًا ومتساوون في الكرامة والحقوق، وقد وهبوا عقلاً وضميرًا وعليهم أن يعاملوا بعضهم بعض بروح الإخاء." .encode("utf-16be").hex())'

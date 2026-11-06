@@ -14,7 +14,7 @@ const gb18030_index = Array.from(cpStarts)
   )
   .join("");
 
-describe("gb18030", () => {
+describe("GBK", () => {
   describe("encode", () => {
     it("encodes € as 0x80", () => {
       expect(gbk.encode("€")).toEqual(new Uint8Array([0x80]));
@@ -44,9 +44,7 @@ describe("gb18030", () => {
         "GB 18030": gb18030_index,
       }),
     )("%s", ([, input]) => {
-      const encodedInput = gbk.encode(input);
-
-      expect(gbk.decode(encodedInput)).toBe(input);
+      expect(gbk.decode(gbk.encode(input))).toBe(input);
     });
   });
 });
