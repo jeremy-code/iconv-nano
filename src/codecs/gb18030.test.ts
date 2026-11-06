@@ -14,33 +14,28 @@ const gb18030_index = Array.from(cpStarts)
   )
   .join("");
 
-const COMPAT_TABLE: Record<string, readonly [number, number]> =
-  Object.fromEntries(
-    (
-      [
-        [0xe78d, [0xa6, 0xd9]],
-        [0xe78e, [0xa6, 0xda]],
-        [0xe78f, [0xa6, 0xdb]],
-        [0xe790, [0xa6, 0xdc]],
-        [0xe791, [0xa6, 0xdd]],
-        [0xe792, [0xa6, 0xde]],
-        [0xe793, [0xa6, 0xdf]],
-        [0xe794, [0xa6, 0xec]],
-        [0xe795, [0xa6, 0xed]],
-        [0xe796, [0xa6, 0xf3]],
-        [0xe81e, [0xfe, 0x59]],
-        [0xe826, [0xfe, 0x61]],
-        [0xe82b, [0xfe, 0x66]],
-        [0xe82c, [0xfe, 0x67]],
-        [0xe832, [0xfe, 0x6d]],
-        [0xe843, [0xfe, 0x7e]],
-        [0xe854, [0xfe, 0x90]],
-        [0xe864, [0xfe, 0xa0]],
-      ] as const
-    ).map(([codePoint, bytes]) => [String.fromCodePoint(codePoint), bytes]),
-  );
+const COMPAT_TABLE = {
+  "\ue78d": [0xa6, 0xd9],
+  "\ue78e": [0xa6, 0xda],
+  "\ue78f": [0xa6, 0xdb],
+  "\ue790": [0xa6, 0xdc],
+  "\ue791": [0xa6, 0xdd],
+  "\ue792": [0xa6, 0xde],
+  "\ue793": [0xa6, 0xdf],
+  "\ue794": [0xa6, 0xec],
+  "\ue795": [0xa6, 0xed],
+  "\ue796": [0xa6, 0xf3],
+  "\ue81e": [0xfe, 0x59],
+  "\ue826": [0xfe, 0x61],
+  "\ue82b": [0xfe, 0x66],
+  "\ue82c": [0xfe, 0x67],
+  "\ue832": [0xfe, 0x6d],
+  "\ue843": [0xfe, 0x7e],
+  "\ue854": [0xfe, 0x90],
+  "\ue864": [0xfe, 0xa0],
+};
 
-describe("gb18030", () => {
+describe("GB 18030", () => {
   describe("encode", () => {
     it("correctly encodes sample inputs", () => {
       // python3 -c 'print("食言者当受食岩之罚".encode("gb18030").hex())'
@@ -165,7 +160,10 @@ describe("gb18030", () => {
         ),
         "GB 18030": gb18030_index,
         // These code points intentionally do not survive roundtrip conversion
-        // "compatibility table": String.fromCodePoint(...[Array.from({ length: 0xe796 - 0xe78d + 1 }, (_, i) => 0xe78d + i),  [0xe81e, 0xe826, 0xe82b, 0xe82c, 0xe832, 0xe843, 0xe854, 0xe864]].flat()),
+        // "compatibility table": String.fromCodePoint(
+        //   ...Array.from({ length: 0xe796 - 0xe78d + 1 }, (_, i) => 0xe78d + i),
+        //   ...[0xe81e, 0xe826, 0xe82b, 0xe82c, 0xe832, 0xe843, 0xe854, 0xe864],
+        // ),
       }),
     )("%s", ([, input]) => {
       const encodedInput = gb18030.encode(input);
