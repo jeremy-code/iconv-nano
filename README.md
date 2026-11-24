@@ -401,6 +401,8 @@ The following encodings are also supported:
 
 Benchmarks comparing the performance of `iconv-nano` and `iconv-lite` can be found at the following GitHub repository: [jeremy-code/encoding-benchmarks](https://github.com/jeremy-code/encoding-benchmarks). Broadly, `iconv-nano` is either on-par or faster with `iconv-lite` when encoding, and usually faster than it when decoding. This becomes especially true when comparing performance in the browser where the Node.js Buffer API has been polyfilled for `iconv-lite`'s use.
 
+A comparison of performance between `icon-nano`, `iconv-lite` and `@exodus/bytes` can also be found in `iconv-lite`'s repository: [pillarjs/iconv-lite/performance](https://github.com/pillarjs/iconv-lite/tree/master/performance).
+
 ## Compatibility
 
 This library relies on the [`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder) API for decoding. The [Encoding API](https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API) enjoys wide support in most JavaScript runtimes, being available since March 2017 in all major browsers[^1] and supported since Node.js v11.0.0,[^1] Deno v0.2.2,[^2] and Bun v0.1.0.[^3] If you look at the [web-platform-tests for encoding](https://wpt.fyi/results/encoding), browsers are in general spec-compliant with regard to their encoding implementations.
